@@ -79,7 +79,7 @@
                 <h3><a href="{{ url('/login') }}" class="btn btn-lg btn-success">Get Started!</a></h3><br>
             </div>
             <div class="col-lg-2">
-                <h5>Amazing Functionalities</h5>
+                <h5>Awesome Functionalities</h5>
                 <p>for Modern Admin Panels</p>
                 <img class="hidden-xs hidden-sm hidden-md" src="{{ asset('/la-assets/img/arrow1.png') }}">
             </div>
