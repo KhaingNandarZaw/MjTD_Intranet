@@ -75,6 +75,8 @@ class DepartmentsController extends Controller
 			}
 			
 			$insert_id = Module::insert("Departments", $request);
+
+			\Session::flash('success', 'Successfully Saved.');
 			
 			return redirect()->route(config('laraadmin.adminRoute') . '.departments.index');
 			
@@ -165,6 +167,8 @@ class DepartmentsController extends Controller
 			}
 			
 			$insert_id = Module::updateRow("Departments", $request, $id);
+
+			\Session::flash('success', 'Successfully Updated.');
 			
 			return redirect()->route(config('laraadmin.adminRoute') . '.departments.index');
 			
@@ -184,6 +188,8 @@ class DepartmentsController extends Controller
 		if(Module::hasAccess("Departments", "delete")) {
 			Department::find($id)->delete();
 			
+			\Session::flash('success', 'Successfully Deleted.');
+
 			// Redirecting to index() method
 			return redirect()->route(config('laraadmin.adminRoute') . '.departments.index');
 		} else {

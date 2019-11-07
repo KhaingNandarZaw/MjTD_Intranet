@@ -7,6 +7,8 @@
 <body class="{{ LAConfigs::getByKey('skin') }} {{ LAConfigs::getByKey('layout') }} @if(LAConfigs::getByKey('layout') == 'sidebar-mini') sidebar-collapse @endif" bsurl="{{ url('') }}" adminRoute="{{ config('laraadmin.adminRoute') }}">
 <div class="wrapper">
 
+	@include('alert')
+
 	@include('la.layouts.partials.mainheader')
 
 	@if(LAConfigs::getByKey('layout') != 'layout-top-nav')
@@ -22,6 +24,9 @@
 		
 		<!-- Main content -->
 		<section class="content {{ $no_padding or '' }}">
+			<div align="center">
+				<div class='notifications top-center'></div>
+			</div>
 			<!-- Your Page Content Here -->
 			@yield('main-content')
 		</section><!-- /.content -->

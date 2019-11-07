@@ -34,7 +34,6 @@
     <script src="{{ asset('/la-assets/plugins/jQuery/jQuery-2.1.4.min.js') }}"></script>
     <script src="{{ asset('/la-assets/js/smoothscroll.js') }}"></script>
 
-
 </head>
 
 <body data-spy="scroll" data-offset="0" data-target="#navigation">
