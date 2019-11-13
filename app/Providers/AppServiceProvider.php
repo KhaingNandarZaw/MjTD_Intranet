@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use View;
+use App\Models\SOP_Setup;
+use App\User;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $data=SOP_Setup::all();
+        View::share('data',$data);
+
+        $user = User::all();
+		View::share('user', $user);
     }
 
     /**
