@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<link rel="stylesheet" type="text/css" href="{{ asset('css/table_modify.css') }}">
 @section('htmlheader')
 	@include('la.layouts.partials.htmlheader')
 @show
@@ -30,7 +30,6 @@
 			<!-- Your Page Content Here -->
 			@yield('main-content')
 		</section><!-- /.content -->
-
 		@if(LAConfigs::getByKey('layout') == 'layout-top-nav') </div> @endif
 	</div><!-- /.content-wrapper -->
 

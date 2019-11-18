@@ -59,9 +59,23 @@
                     @la_input($module, 'name', null, null, "form-control text-uppercase", ["placeholder" => "Role Name in CAPITAL LETTERS with '_' to JOIN e.g. 'SUPER_ADMIN'"])
 					@la_input($module, 'display_name')
 					@la_input($module, 'description')
-					@la_input($module, 'parent')
+					
+
+					<div class="form-group">
+                    <label for="role">Role <span style="color: red;">* </span>:</label>
+                    <select class="form-control" required="1" data-placeholder="Select Role" rel="select2" name="role">
+                        <?php $roles = App\Role::all(); ?>
+                        @foreach($roles as $role)
+                            @if($role->id != 1)
+                                <option value="{{ $role->id }}">{{ $role->name }}</option>  
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+					
 					@la_input($module, 'dept')
 				</div>
+
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

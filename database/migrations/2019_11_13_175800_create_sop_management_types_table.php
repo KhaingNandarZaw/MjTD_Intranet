@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Dwij\Laraadmin\Models\Module;
 
-class CreatePermissionsTable extends Migration
+class CreateSopManagementTypesTable extends Migration
 {
     /**
      * Migration generate Module Table Schema by LaraAdmin
@@ -20,25 +20,15 @@ class CreatePermissionsTable extends Migration
      */
     public function up()
     {
-        Module::generate("Permissions", 'permissions', 'description', 'fa-magic', [
+        Module::generate("Sop_management_types", 'sop_management_types', 'name', 'fa-align-justify', [
             [
                 "colname" => "name",
                 "label" => "Name",
                 "field_type" => "Name",
-                "unique" => true,
-                "defaultvalue" => "",
-                "minlength" => 1,
-                "maxlength" => 250,
-                "required" => true,
-                "listing_col" => false
-            ], [
-                "colname" => "display_name",
-                "label" => "Display Name",
-                "field_type" => "String",
                 "unique" => false,
                 "defaultvalue" => "",
-                "minlength" => 0,
-                "maxlength" => 250,
+                "minlength" => 1,
+                "maxlength" => 255,
                 "required" => true,
                 "listing_col" => true
             ], [
@@ -48,9 +38,9 @@ class CreatePermissionsTable extends Migration
                 "unique" => false,
                 "defaultvalue" => "",
                 "minlength" => 0,
-                "maxlength" => 1000,
-                "required" => false,
-                "listing_col" => false
+                "maxlength" => 256,
+                "required" => true,
+                "listing_col" => true
             ]
         ]);
         
@@ -92,8 +82,8 @@ class CreatePermissionsTable extends Migration
      */
     public function down()
     {
-        if(Schema::hasTable('permissions')) {
-            Schema::drop('permissions');
+        if(Schema::hasTable('sop_management_types')) {
+            Schema::drop('sop_management_types');
         }
     }
 }

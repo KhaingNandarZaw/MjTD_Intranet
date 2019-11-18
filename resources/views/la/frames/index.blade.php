@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "Permissions")
-@section("contentheader_description", "Permissions listing")
-@section("section", "Permissions")
+@section("contentheader_title", "Frames")
+@section("contentheader_description", "Frames listing")
+@section("section", "Frames")
 @section("sub_section", "Listing")
-@section("htmlheader_title", "Permissions Listing")
+@section("htmlheader_title", "Frames Listing")
 
 @section("headerElems")
-@la_access("Permissions", "create")
-    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Permission</button>
+@la_access("Frames", "create")
+    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Frame</button>
 @endla_access
 @endsection
 
@@ -45,23 +45,21 @@
     </div>
 </div>
 
-@la_access("Permissions", "create")
+@la_access("Frames", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add Permission</h4>
+                <h4 class="modal-title" id="myModalLabel">Add Frame</h4>
             </div>
-            {!! Form::open(['action' => 'LA\PermissionsController@store', 'id' => 'permission-add-form']) !!}
+            {!! Form::open(['action' => 'LA\FramesController@store', 'id' => 'frame-add-form']) !!}
             <div class="modal-body">
                 <div class="box-body">
                     @la_form($module)
                     
                     {{--
                     @la_input($module, 'name')
-					@la_input($module, 'display_name')
-					@la_input($module, 'description')
                     --}}
                 </div>
             </div>
@@ -88,7 +86,7 @@ $(function () {
     $("#example1").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url(config('laraadmin.adminRoute') . '/permission_dt_ajax') }}",
+        ajax: "{{ url(config('laraadmin.adminRoute') . '/frame_dt_ajax') }}",
         language: {
             lengthMenu: "_MENU_",
             search: "_INPUT_",
@@ -98,7 +96,7 @@ $(function () {
         columnDefs: [ { orderable: false, targets: [-1] }],
         @endif
     });
-    $("#permission-add-form").validate({
+    $("#frame-add-form").validate({
         
     });
 });

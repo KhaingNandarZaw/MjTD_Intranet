@@ -1,14 +1,16 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "Permissions")
-@section("contentheader_description", "Permissions listing")
-@section("section", "Permissions")
+@section("contentheader_title", "SOP Set ups")
+@section("contentheader_description", "SOP Set ups listing")
+@section("section", "SOP Set ups")
 @section("sub_section", "Listing")
-@section("htmlheader_title", "Permissions Listing")
+@section("htmlheader_title", "SOP Set ups Listing")
 
+
+         
 @section("headerElems")
-@la_access("Permissions", "create")
-    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Permission</button>
+@la_access("SOP_Set_ups", "create")
+    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add SOP Set up</button>
 @endla_access
 @endsection
 
@@ -23,45 +25,40 @@
         </ul>
     </div>
 @endif
-
 <div class="box box-success">
-    <!--<div class="box-header"></div>-->
     <div class="box-body">
-        <table id="example1" class="table table-bordered">
-        <thead>
-        <tr class="success">
-            @foreach( $listing_cols as $col )
-            <th>{{ $module->fields[$col]['label'] or ucfirst($col) }}</th>
-            @endforeach
-            @if($show_actions)
-            <th>Actions</th>
-            @endif
-        </tr>
-        </thead>
-        <tbody>
-            
-        </tbody>
+        <table id="example1" class="table-align table table-bordered">
+            <thead>
+                <tr class="success">
+                    @foreach( $listing_cols as $col )
+                    <th>{{ $module->fields[$col]['label'] or ucfirst($col) }}</th>
+                    @endforeach
+                    @if($show_actions)
+                    <th>Actions</th>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
         </table>
     </div>
 </div>
-
-@la_access("Permissions", "create")
+@la_access("SOP_Set_ups", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add Permission</h4>
+                <h4 class="modal-title" id="myModalLabel">Add SOP Set up</h4>
             </div>
-            {!! Form::open(['action' => 'LA\PermissionsController@store', 'id' => 'permission-add-form']) !!}
+            {!! Form::open(['action' => 'LA\SOP_Set_upsController@store', 'id' => 'sop_set_up-add-form']) !!}
             <div class="modal-body">
                 <div class="box-body">
                     @la_form($module)
                     
                     {{--
                     @la_input($module, 'name')
-					@la_input($module, 'display_name')
-					@la_input($module, 'description')
                     --}}
                 </div>
             </div>
@@ -88,7 +85,7 @@ $(function () {
     $("#example1").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url(config('laraadmin.adminRoute') . '/permission_dt_ajax') }}",
+        ajax: "{{ url(config('laraadmin.adminRoute') . '/sop_set_up_dt_ajax') }}",
         language: {
             lengthMenu: "_MENU_",
             search: "_INPUT_",
@@ -98,7 +95,7 @@ $(function () {
         columnDefs: [ { orderable: false, targets: [-1] }],
         @endif
     });
-    $("#permission-add-form").validate({
+    $("#sop_set_up-add-form").validate({
         
     });
 });
