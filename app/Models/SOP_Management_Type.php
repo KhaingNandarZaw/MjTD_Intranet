@@ -12,11 +12,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SOP_Management extends Model
+class SOP_Management_Type extends Model
 {
     use SoftDeletes;
     
-    protected $table = 'sop_managements';
+    protected $table = 'sop_management_types';
     
     protected $hidden = [
     

@@ -20,25 +20,25 @@ use Collective\Html\FormFacade as Form;
 use Dwij\Laraadmin\Models\Module;
 use Dwij\Laraadmin\Models\ModuleFields;
 
-use App\Models\SOP_Management;
+use App\Models\Frame;
 
-class SOP_ManagementsController extends Controller
+class FramesController extends Controller
 {
     public $show_action = true;
     
     /**
-     * Display a listing of the SOP_Managements.
+     * Display a listing of the Frames.
      *
      * @return mixed
      */
     public function index()
     {
-        $module = Module::get('SOP_Managements');
+        $module = Module::get('Frames');
         
         if(Module::hasAccess($module->id)) {
-            return View('la.sop_managements.index', [
+            return View('la.frames.index', [
                 'show_actions' => $this->show_action,
-                'listing_cols' => Module::getListingColumns('SOP_Managements'),
+                'listing_cols' => Module::getListingColumns('Frames'),
                 'module' => $module
             ]);
         } else {
@@ -47,7 +47,7 @@ class SOP_ManagementsController extends Controller
     }
     
     /**
-     * Show the form for creating a new sop_management.
+     * Show the form for creating a new frame.
      *
      * @return mixed
      */
@@ -57,16 +57,16 @@ class SOP_ManagementsController extends Controller
     }
     
     /**
-     * Store a newly created sop_management in database.
+     * Store a newly created frame in database.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        if(Module::hasAccess("SOP_Managements", "create")) {
+        if(Module::hasAccess("Frames", "create")) {
             
-            $rules = Module::validateRules("SOP_Managements", $request);
+            $rules = Module::validateRules("Frames", $request);
             
             $validator = Validator::make($request->all(), $rules);
             
@@ -74,10 +74,9 @@ class SOP_ManagementsController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
             
-            $insert_id = Module::insert("SOP_Managements", $request);
+            $insert_id = Module::insert("Frames", $request);
             
-            \Session::flash('success', 'Successfully Inserted.');
-            return redirect()->route(config('laraadmin.adminRoute') . '.sop_managements.index');
+            return redirect()->route(config('laraadmin.adminRoute') . '.frames.index');
             
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
@@ -85,30 +84,30 @@ class SOP_ManagementsController extends Controller
     }
     
     /**
-     * Display the specified sop_management.
+     * Display the specified frame.
      *
-     * @param int $id sop_management ID
+     * @param int $id frame ID
      * @return mixed
      */
     public function show($id)
     {
-        if(Module::hasAccess("SOP_Managements", "view")) {
+        if(Module::hasAccess("Frames", "view")) {
             
-            $sop_management = SOP_Management::find($id);
-            if(isset($sop_management->id)) {
-                $module = Module::get('SOP_Managements');
-                $module->row = $sop_management;
+            $frame = Frame::find($id);
+            if(isset($frame->id)) {
+                $module = Module::get('Frames');
+                $module->row = $frame;
                 
-                return view('la.sop_managements.show', [
+                return view('la.frames.show', [
                     'module' => $module,
                     'view_col' => $module->view_col,
                     'no_header' => true,
                     'no_padding' => "no-padding"
-                ])->with('sop_management', $sop_management);
+                ])->with('frame', $frame);
             } else {
                 return view('errors.404', [
                     'record_id' => $id,
-                    'record_name' => ucfirst("sop_management"),
+                    'record_name' => ucfirst("frame"),
                 ]);
             }
         } else {
@@ -117,28 +116,28 @@ class SOP_ManagementsController extends Controller
     }
     
     /**
-     * Show the form for editing the specified sop_management.
+     * Show the form for editing the specified frame.
      *
-     * @param int $id sop_management ID
+     * @param int $id frame ID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function edit($id)
     {
-        if(Module::hasAccess("SOP_Managements", "edit")) {
-            $sop_management = SOP_Management::find($id);
-            if(isset($sop_management->id)) {
-                $module = Module::get('SOP_Managements');
+        if(Module::hasAccess("Frames", "edit")) {
+            $frame = Frame::find($id);
+            if(isset($frame->id)) {
+                $module = Module::get('Frames');
                 
-                $module->row = $sop_management;
+                $module->row = $frame;
                 
-                return view('la.sop_managements.edit', [
+                return view('la.frames.edit', [
                     'module' => $module,
                     'view_col' => $module->view_col,
-                ])->with('sop_management', $sop_management);
+                ])->with('frame', $frame);
             } else {
                 return view('errors.404', [
                     'record_id' => $id,
-                    'record_name' => ucfirst("sop_management"),
+                    'record_name' => ucfirst("frame"),
                 ]);
             }
         } else {
@@ -147,17 +146,17 @@ class SOP_ManagementsController extends Controller
     }
     
     /**
-     * Update the specified sop_management in storage.
+     * Update the specified frame in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id sop_management ID
+     * @param int $id frame ID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        if(Module::hasAccess("SOP_Managements", "edit")) {
+        if(Module::hasAccess("Frames", "edit")) {
             
-            $rules = Module::validateRules("SOP_Managements", $request, true);
+            $rules = Module::validateRules("Frames", $request, true);
             
             $validator = Validator::make($request->all(), $rules);
             
@@ -165,10 +164,9 @@ class SOP_ManagementsController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();;
             }
             
-            $insert_id = Module::updateRow("SOP_Managements", $request, $id);
+            $insert_id = Module::updateRow("Frames", $request, $id);
             
-            \Session::flash('success', 'Successfully Updated.');
-            return redirect()->route(config('laraadmin.adminRoute') . '.sop_managements.index');
+            return redirect()->route(config('laraadmin.adminRoute') . '.frames.index');
             
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
@@ -176,19 +174,18 @@ class SOP_ManagementsController extends Controller
     }
     
     /**
-     * Remove the specified sop_management from storage.
+     * Remove the specified frame from storage.
      *
-     * @param int $id sop_management ID
+     * @param int $id frame ID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        if(Module::hasAccess("SOP_Managements", "delete")) {
-            SOP_Management::find($id)->delete();
+        if(Module::hasAccess("Frames", "delete")) {
+            Frame::find($id)->delete();
             
-            \Session::flash('success', 'Successfully Deleted.');
             // Redirecting to index() method
-            return redirect()->route(config('laraadmin.adminRoute') . '.sop_managements.index');
+            return redirect()->route(config('laraadmin.adminRoute') . '.frames.index');
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
         }
@@ -202,14 +199,14 @@ class SOP_ManagementsController extends Controller
      */
     public function dtajax(Request $request)
     {
-        $module = Module::get('SOP_Managements');
-        $listing_cols = Module::getListingColumns('SOP_Managements');
+        $module = Module::get('Frames');
+        $listing_cols = Module::getListingColumns('Frames');
         
-        $values = DB::table('sop_managements')->select($listing_cols)->whereNull('deleted_at');
+        $values = DB::table('frames')->select($listing_cols)->whereNull('deleted_at');
         $out = Datatables::of($values)->make();
         $data = $out->getData();
         
-        $fields_popup = ModuleFields::getModuleFields('SOP_Managements');
+        $fields_popup = ModuleFields::getModuleFields('Frames');
         
         for($i = 0; $i < count($data->data); $i++) {
             for($j = 0; $j < count($listing_cols); $j++) {
@@ -218,7 +215,7 @@ class SOP_ManagementsController extends Controller
                     $data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
                 }
                 if($col == $module->view_col) {
-                    $data->data[$i][$j] = '<a href="' . url(config('laraadmin.adminRoute') . '/sop_managements/' . $data->data[$i][0]) . '">' . $data->data[$i][$j] . '</a>';
+                    $data->data[$i][$j] = '<a href="' . url(config('laraadmin.adminRoute') . '/frames/' . $data->data[$i][0]) . '">' . $data->data[$i][$j] . '</a>';
                 }
                 // else if($col == "author") {
                 //    $data->data[$i][$j];
@@ -227,18 +224,13 @@ class SOP_ManagementsController extends Controller
             
             if($this->show_action) {
                 $output = '';
-                if(Module::hasAccess("SOP_Managements", "edit")) {
-                    $output .= '<a href="' . url(config('laraadmin.adminRoute') . '/sop_managements/' . $data->data[$i][0] . '/edit') . '" class="btn btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;"><i class="fa fa-edit"></i></a>';
+                if(Module::hasAccess("Frames", "edit")) {
+                    $output .= '<a href="' . url(config('laraadmin.adminRoute') . '/frames/' . $data->data[$i][0] . '/edit') . '" class="btn btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;"><i class="fa fa-edit"></i></a>';
                 }
                 
-                if(Module::hasAccess("SOP_Managements", "delete")) {
-                    $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.sop_managements.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
-                    
-                    ob_start();                    
-                    include('deletealert.html');  
-                    $output .= ob_get_contents();  
-                    ob_end_clean();                
-                    
+                if(Module::hasAccess("Frames", "delete")) {
+                    $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.frames.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
+                    $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
                     $output .= Form::close();
                 }
                 $data->data[$i][] = (string)$output;

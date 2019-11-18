@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
 @section("contentheader_title")
-    <a href="{{ url(config('laraadmin.adminRoute') . '/timeframes') }}">Timeframe</a> :
+    <a href="{{ url(config('laraadmin.adminRoute') . '/frames') }}">Frame</a> :
 @endsection
-@section("contentheader_description", $timeframe->$view_col)
-@section("section", "Timeframes")
-@section("section_url", url(config('laraadmin.adminRoute') . '/timeframes'))
+@section("contentheader_description", $frame->$view_col)
+@section("section", "Frames")
+@section("section_url", url(config('laraadmin.adminRoute') . '/frames'))
 @section("sub_section", "Edit")
 
-@section("htmlheader_title", "Timeframes Edit : ".$timeframe->$view_col)
+@section("htmlheader_title", "Frames Edit : ".$frame->$view_col)
 
 @section("main-content")
 
@@ -29,7 +29,7 @@
     <div class="box-body">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                {!! Form::model($timeframe, ['route' => [config('laraadmin.adminRoute') . '.timeframes.update', $timeframe->id ], 'method'=>'PUT', 'id' => 'timeframe-edit-form']) !!}
+                {!! Form::model($frame, ['route' => [config('laraadmin.adminRoute') . '.frames.update', $frame->id ], 'method'=>'PUT', 'id' => 'frame-edit-form']) !!}
                     @la_form($module)
                     
                     {{--
@@ -37,7 +37,7 @@
                     --}}
                     <br>
                     <div class="form-group">
-                        {!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/timeframes') }}" class="btn btn-default pull-right">Cancel</a>
+                        {!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/frames') }}" class="btn btn-default pull-right">Cancel</a>
                     </div>
                 {!! Form::close() !!}
             </div>
@@ -50,7 +50,7 @@
 @push('scripts')
 <script>
 $(function () {
-    $("#timeframe-edit-form").validate({
+    $("#frame-edit-form").validate({
         
     });
 });

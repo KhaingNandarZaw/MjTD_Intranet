@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Dwij\Laraadmin\Models\Module;
 
-class CreateTimeframesTable extends Migration
+class CreateSopManagementTypesTable extends Migration
 {
     /**
      * Migration generate Module Table Schema by LaraAdmin
@@ -20,7 +20,7 @@ class CreateTimeframesTable extends Migration
      */
     public function up()
     {
-        Module::generate("Timeframes", 'timeframes', 'name', 'fa-balance-scale', [
+        Module::generate("Sop_management_types", 'sop_management_types', 'name', 'fa-align-justify', [
             [
                 "colname" => "name",
                 "label" => "Name",
@@ -29,6 +29,16 @@ class CreateTimeframesTable extends Migration
                 "defaultvalue" => "",
                 "minlength" => 1,
                 "maxlength" => 255,
+                "required" => true,
+                "listing_col" => true
+            ], [
+                "colname" => "description",
+                "label" => "Description",
+                "field_type" => "Textarea",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 256,
                 "required" => true,
                 "listing_col" => true
             ]
@@ -72,8 +82,8 @@ class CreateTimeframesTable extends Migration
      */
     public function down()
     {
-        if(Schema::hasTable('timeframes')) {
-            Schema::drop('timeframes');
+        if(Schema::hasTable('sop_management_types')) {
+            Schema::drop('sop_management_types');
         }
     }
 }

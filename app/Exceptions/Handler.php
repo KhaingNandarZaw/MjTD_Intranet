@@ -44,27 +44,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($this->isHttpException($exception)) {
-            $response = [];
-
-            $response['exception'] = get_class($exception);
-            $response['status_code'] = $exception->getStatusCode();
-
-            switch($response['status_code'])
-            {
-                case 403:
-                    $response['message'] = "403 Error Page";
-                    break;
-                case 404:
-                    $response['message'] = "404 Error Page";
-                    break;
-                default:
-                    $response['message'] = "Error Page";
-                    break;
-            }
-
-            return response()->view('errors.error', compact('response'));
-        }
+        
         return parent::render($request, $exception);
     }
 

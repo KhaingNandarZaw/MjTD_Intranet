@@ -63,25 +63,20 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_PANEL']], 
 	Route::get(config('laraadmin.adminRoute') . '/backup_dt_ajax', 'LA\BackupsController@dtajax');
 	Route::post(config('laraadmin.adminRoute') . '/create_backup_ajax', 'LA\BackupsController@create_backup_ajax');
 	Route::get(config('laraadmin.adminRoute') . '/downloadBackup/{id}', 'LA\BackupsController@downloadBackup');
+    
 
-    /* ================== SOP_Management_Modules ================== */
-    Route::resource(config('laraadmin.adminRoute') . '/sop_management_modules', 'LA\SOP_Management_ModulesController');
-    Route::get(config('laraadmin.adminRoute') . '/sop_management_module_dt_ajax', 'LA\SOP_Management_ModulesController@dtajax');
+    /* ================== SOP_Management_Types ================== */
+    Route::resource(config('laraadmin.adminRoute') . '/sop_management_types', 'LA\SOP_Management_TypesController');
+    Route::get(config('laraadmin.adminRoute') . '/sop_management_type_dt_ajax', 'LA\SOP_Management_TypesController@dtajax');
 
-    /* ================== SOP_Managements ================== */
-    Route::resource(config('laraadmin.adminRoute') . '/sop_managements', 'LA\SOP_ManagementsController');
-    Route::get(config('laraadmin.adminRoute') . '/sop_management_dt_ajax', 'LA\SOP_ManagementsController@dtajax');
-
-    /* ================== SOP_Managements ================== */
-    Route::resource(config('laraadmin.adminRoute') . '/sop_managements', 'LA\SOP_ManagementsController');
-    Route::get(config('laraadmin.adminRoute') . '/sop_management_dt_ajax', 'LA\SOP_ManagementsController@dtajax');
+    /* ================== SOP_Set_ups ================== */
+    Route::resource(config('laraadmin.adminRoute') . '/sop_set_ups', 'LA\SOP_Set_upsController');
+    Route::get(config('laraadmin.adminRoute') . '/sop_set_up_dt_ajax', 'LA\SOP_Set_upsController@dtajax');
 
 
-    /* ================== SOP_Setups ================== */
-    Route::resource(config('laraadmin.adminRoute') . '/sop_setups', 'LA\SOP_SetupsController');
-    Route::get(config('laraadmin.adminRoute') . '/sop_setup_dt_ajax', 'LA\SOP_SetupsController@dtajax');
+    /* ================== Frames ================== */
+    Route::resource(config('laraadmin.adminRoute') . '/frames', 'LA\FramesController');
+    Route::get(config('laraadmin.adminRoute') . '/frame_dt_ajax', 'LA\FramesController@dtajax');
 
-    /* ================== Timeframes ================== */
-    Route::resource(config('laraadmin.adminRoute') . '/timeframes', 'LA\TimeframesController');
-    Route::get(config('laraadmin.adminRoute') . '/timeframe_dt_ajax', 'LA\TimeframesController@dtajax');
+    Route::resource(config('laraadmin.adminRoute') . '/admintheme', 'AdminthemeController@index');
 });

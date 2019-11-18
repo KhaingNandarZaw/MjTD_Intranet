@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Dwij\Laraadmin\Models\Module;
 
-class CreateSopManagementsTable extends Migration
+class CreateSopSetUpsTable extends Migration
 {
     /**
      * Migration generate Module Table Schema by LaraAdmin
@@ -20,7 +20,7 @@ class CreateSopManagementsTable extends Migration
      */
     public function up()
     {
-        Module::generate("Sop_managements", 'sop_managements', 'description', 'fa-list-ul', [
+        Module::generate("Sop_set_ups", 'sop_set_ups', 'name', 'fa-gear', [
             [
                 "colname" => "name",
                 "label" => "Name",
@@ -28,17 +28,7 @@ class CreateSopManagementsTable extends Migration
                 "unique" => false,
                 "defaultvalue" => "",
                 "minlength" => 1,
-                "maxlength" => 225,
-                "required" => true,
-                "listing_col" => true
-            ], [
-                "colname" => "description",
-                "label" => "Description",
-                "field_type" => "Textarea",
-                "unique" => false,
-                "defaultvalue" => "",
-                "minlength" => 0,
-                "maxlength" => 0,
+                "maxlength" => 255,
                 "required" => true,
                 "listing_col" => true
             ]
@@ -82,8 +72,8 @@ class CreateSopManagementsTable extends Migration
      */
     public function down()
     {
-        if(Schema::hasTable('sop_managements')) {
-            Schema::drop('sop_managements');
+        if(Schema::hasTable('sop_set_ups')) {
+            Schema::drop('sop_set_ups');
         }
     }
 }

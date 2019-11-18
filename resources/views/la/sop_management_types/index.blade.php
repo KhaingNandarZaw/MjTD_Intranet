@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "Timeframes")
-@section("contentheader_description", "Timeframes listing")
-@section("section", "Timeframes")
+@section("contentheader_title", "SOP Management Types")
+@section("contentheader_description", "SOP Management Types listing")
+@section("section", "SOP Management Types")
 @section("sub_section", "Listing")
-@section("htmlheader_title", "Timeframes Listing")
+@section("htmlheader_title", "SOP Management Types Listing")
 
 @section("headerElems")
-@la_access("Timeframes", "create")
-    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Timeframe</button>
+@la_access("SOP_Management_Types", "create")
+    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add SOP Management Type</button>
 @endla_access
 @endsection
 
@@ -45,21 +45,22 @@
     </div>
 </div>
 
-@la_access("Timeframes", "create")
+@la_access("SOP_Management_Types", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add Timeframe</h4>
+                <h4 class="modal-title" id="myModalLabel">Add SOP Management Type</h4>
             </div>
-            {!! Form::open(['action' => 'LA\TimeframesController@store', 'id' => 'timeframe-add-form']) !!}
+            {!! Form::open(['action' => 'LA\SOP_Management_TypesController@store', 'id' => 'sop_management_type-add-form']) !!}
             <div class="modal-body">
                 <div class="box-body">
                     @la_form($module)
                     
                     {{--
                     @la_input($module, 'name')
+					@la_input($module, 'description')
                     --}}
                 </div>
             </div>
@@ -86,7 +87,7 @@ $(function () {
     $("#example1").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url(config('laraadmin.adminRoute') . '/timeframe_dt_ajax') }}",
+        ajax: "{{ url(config('laraadmin.adminRoute') . '/sop_management_type_dt_ajax') }}",
         language: {
             lengthMenu: "_MENU_",
             search: "_INPUT_",
@@ -96,7 +97,7 @@ $(function () {
         columnDefs: [ { orderable: false, targets: [-1] }],
         @endif
     });
-    $("#timeframe-add-form").validate({
+    $("#sop_management_type-add-form").validate({
         
     });
 });

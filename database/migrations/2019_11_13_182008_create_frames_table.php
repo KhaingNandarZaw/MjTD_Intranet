@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Dwij\Laraadmin\Models\Module;
 
-class CreatePermissionsTable extends Migration
+class CreateFramesTable extends Migration
 {
     /**
      * Migration generate Module Table Schema by LaraAdmin
@@ -20,37 +20,17 @@ class CreatePermissionsTable extends Migration
      */
     public function up()
     {
-        Module::generate("Permissions", 'permissions', 'description', 'fa-magic', [
+        Module::generate("Frames", 'frames', 'name', 'fa-angle-double-right', [
             [
                 "colname" => "name",
                 "label" => "Name",
                 "field_type" => "Name",
-                "unique" => true,
+                "unique" => false,
                 "defaultvalue" => "",
                 "minlength" => 1,
-                "maxlength" => 250,
-                "required" => true,
-                "listing_col" => false
-            ], [
-                "colname" => "display_name",
-                "label" => "Display Name",
-                "field_type" => "String",
-                "unique" => false,
-                "defaultvalue" => "",
-                "minlength" => 0,
-                "maxlength" => 250,
+                "maxlength" => 255,
                 "required" => true,
                 "listing_col" => true
-            ], [
-                "colname" => "description",
-                "label" => "Description",
-                "field_type" => "Textarea",
-                "unique" => false,
-                "defaultvalue" => "",
-                "minlength" => 0,
-                "maxlength" => 1000,
-                "required" => false,
-                "listing_col" => false
             ]
         ]);
         
@@ -92,8 +72,8 @@ class CreatePermissionsTable extends Migration
      */
     public function down()
     {
-        if(Schema::hasTable('permissions')) {
-            Schema::drop('permissions');
+        if(Schema::hasTable('frames')) {
+            Schema::drop('frames');
         }
     }
 }
