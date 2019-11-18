@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "SOP Setups")
-@section("contentheader_description", "SOP Setups listing")
-@section("section", "SOP Setups")
+@section("contentheader_title", "Frames")
+@section("contentheader_description", "Frames listing")
+@section("section", "Frames")
 @section("sub_section", "Listing")
-@section("htmlheader_title", "SOP Setups Listing")
+@section("htmlheader_title", "Frames Listing")
 
 @section("headerElems")
-@la_access("SOP_Setups", "create")
-    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add SOP Setup</button>
+@la_access("Frames", "create")
+    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Frame</button>
 @endla_access
 @endsection
 
@@ -45,28 +45,21 @@
     </div>
 </div>
 
-@la_access("SOP_Setups", "create")
+@la_access("Frames", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add SOP Setup</h4>
+                <h4 class="modal-title" id="myModalLabel">Add Frame</h4>
             </div>
-            {!! Form::open(['action' => 'LA\SOP_SetupsController@store', 'id' => 'sop_setup-add-form']) !!}
+            {!! Form::open(['action' => 'LA\FramesController@store', 'id' => 'frame-add-form']) !!}
             <div class="modal-body">
                 <div class="box-body">
                     @la_form($module)
                     
                     {{--
                     @la_input($module, 'name')
-					@la_input($module, 'description')
-					@la_input($module, 'timeframe')
-					@la_input($module, 'pic')
-					@la_input($module, 'supporting')
-					@la_input($module, 'report_to')
-					@la_input($module, 'sop_type')
-					@la_input($module, 'file')
                     --}}
                 </div>
             </div>
@@ -93,7 +86,7 @@ $(function () {
     $("#example1").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url(config('laraadmin.adminRoute') . '/sop_setup_dt_ajax') }}",
+        ajax: "{{ url(config('laraadmin.adminRoute') . '/frame_dt_ajax') }}",
         language: {
             lengthMenu: "_MENU_",
             search: "_INPUT_",
@@ -103,7 +96,7 @@ $(function () {
         columnDefs: [ { orderable: false, targets: [-1] }],
         @endif
     });
-    $("#sop_setup-add-form").validate({
+    $("#frame-add-form").validate({
         
     });
 });

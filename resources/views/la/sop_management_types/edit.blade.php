@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
 @section("contentheader_title")
-    <a href="{{ url(config('laraadmin.adminRoute') . '/sop_setups') }}">SOP Setup</a> :
+    <a href="{{ url(config('laraadmin.adminRoute') . '/sop_management_types') }}">SOP Management Type</a> :
 @endsection
-@section("contentheader_description", $sop_setup->$view_col)
-@section("section", "SOP Setups")
-@section("section_url", url(config('laraadmin.adminRoute') . '/sop_setups'))
+@section("contentheader_description", $sop_management_type->$view_col)
+@section("section", "SOP Management Types")
+@section("section_url", url(config('laraadmin.adminRoute') . '/sop_management_types'))
 @section("sub_section", "Edit")
 
-@section("htmlheader_title", "SOP Setups Edit : ".$sop_setup->$view_col)
+@section("htmlheader_title", "SOP Management Types Edit : ".$sop_management_type->$view_col)
 
 @section("main-content")
 
@@ -29,22 +29,16 @@
     <div class="box-body">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                {!! Form::model($sop_setup, ['route' => [config('laraadmin.adminRoute') . '.sop_setups.update', $sop_setup->id ], 'method'=>'PUT', 'id' => 'sop_setup-edit-form']) !!}
+                {!! Form::model($sop_management_type, ['route' => [config('laraadmin.adminRoute') . '.sop_management_types.update', $sop_management_type->id ], 'method'=>'PUT', 'id' => 'sop_management_type-edit-form']) !!}
                     @la_form($module)
                     
                     {{--
                     @la_input($module, 'name')
 					@la_input($module, 'description')
-					@la_input($module, 'timeframe')
-					@la_input($module, 'pic')
-					@la_input($module, 'supporting')
-					@la_input($module, 'report_to')
-					@la_input($module, 'sop_type')
-					@la_input($module, 'file')
                     --}}
                     <br>
                     <div class="form-group">
-                        {!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/sop_setups') }}" class="btn btn-default pull-right">Cancel</a>
+                        {!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/sop_management_types') }}" class="btn btn-default pull-right">Cancel</a>
                     </div>
                 {!! Form::close() !!}
             </div>
@@ -57,7 +51,7 @@
 @push('scripts')
 <script>
 $(function () {
-    $("#sop_setup-edit-form").validate({
+    $("#sop_management_type-edit-form").validate({
         
     });
 });

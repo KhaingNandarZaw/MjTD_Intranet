@@ -20,25 +20,25 @@ use Collective\Html\FormFacade as Form;
 use Dwij\Laraadmin\Models\Module;
 use Dwij\Laraadmin\Models\ModuleFields;
 
-use App\Models\Timeframe;
+use App\Models\SOP_Set_up;
 
-class TimeframesController extends Controller
+class SOP_Set_upsController extends Controller
 {
     public $show_action = true;
     
     /**
-     * Display a listing of the Timeframes.
+     * Display a listing of the SOP_Set_ups.
      *
      * @return mixed
      */
     public function index()
     {
-        $module = Module::get('Timeframes');
+        $module = Module::get('SOP_Set_ups');
         
         if(Module::hasAccess($module->id)) {
-            return View('la.timeframes.index', [
+            return View('la.sop_set_ups.index', [
                 'show_actions' => $this->show_action,
-                'listing_cols' => Module::getListingColumns('Timeframes'),
+                'listing_cols' => Module::getListingColumns('SOP_Set_ups'),
                 'module' => $module
             ]);
         } else {
@@ -47,7 +47,7 @@ class TimeframesController extends Controller
     }
     
     /**
-     * Show the form for creating a new timeframe.
+     * Show the form for creating a new sop_set_up.
      *
      * @return mixed
      */
@@ -57,16 +57,16 @@ class TimeframesController extends Controller
     }
     
     /**
-     * Store a newly created timeframe in database.
+     * Store a newly created sop_set_up in database.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        if(Module::hasAccess("Timeframes", "create")) {
+        if(Module::hasAccess("SOP_Set_ups", "create")) {
             
-            $rules = Module::validateRules("Timeframes", $request);
+            $rules = Module::validateRules("SOP_Set_ups", $request);
             
             $validator = Validator::make($request->all(), $rules);
             
@@ -74,9 +74,9 @@ class TimeframesController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
             
-            $insert_id = Module::insert("Timeframes", $request);
+            $insert_id = Module::insert("SOP_Set_ups", $request);
             
-            return redirect()->route(config('laraadmin.adminRoute') . '.timeframes.index');
+            return redirect()->route(config('laraadmin.adminRoute') . '.sop_set_ups.index');
             
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
@@ -84,30 +84,30 @@ class TimeframesController extends Controller
     }
     
     /**
-     * Display the specified timeframe.
+     * Display the specified sop_set_up.
      *
-     * @param int $id timeframe ID
+     * @param int $id sop_set_up ID
      * @return mixed
      */
     public function show($id)
     {
-        if(Module::hasAccess("Timeframes", "view")) {
+        if(Module::hasAccess("SOP_Set_ups", "view")) {
             
-            $timeframe = Timeframe::find($id);
-            if(isset($timeframe->id)) {
-                $module = Module::get('Timeframes');
-                $module->row = $timeframe;
+            $sop_set_up = SOP_Set_up::find($id);
+            if(isset($sop_set_up->id)) {
+                $module = Module::get('SOP_Set_ups');
+                $module->row = $sop_set_up;
                 
-                return view('la.timeframes.show', [
+                return view('la.sop_set_ups.show', [
                     'module' => $module,
                     'view_col' => $module->view_col,
                     'no_header' => true,
                     'no_padding' => "no-padding"
-                ])->with('timeframe', $timeframe);
+                ])->with('sop_set_up', $sop_set_up);
             } else {
                 return view('errors.404', [
                     'record_id' => $id,
-                    'record_name' => ucfirst("timeframe"),
+                    'record_name' => ucfirst("sop_set_up"),
                 ]);
             }
         } else {
@@ -116,28 +116,28 @@ class TimeframesController extends Controller
     }
     
     /**
-     * Show the form for editing the specified timeframe.
+     * Show the form for editing the specified sop_set_up.
      *
-     * @param int $id timeframe ID
+     * @param int $id sop_set_up ID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function edit($id)
     {
-        if(Module::hasAccess("Timeframes", "edit")) {
-            $timeframe = Timeframe::find($id);
-            if(isset($timeframe->id)) {
-                $module = Module::get('Timeframes');
+        if(Module::hasAccess("SOP_Set_ups", "edit")) {
+            $sop_set_up = SOP_Set_up::find($id);
+            if(isset($sop_set_up->id)) {
+                $module = Module::get('SOP_Set_ups');
                 
-                $module->row = $timeframe;
+                $module->row = $sop_set_up;
                 
-                return view('la.timeframes.edit', [
+                return view('la.sop_set_ups.edit', [
                     'module' => $module,
                     'view_col' => $module->view_col,
-                ])->with('timeframe', $timeframe);
+                ])->with('sop_set_up', $sop_set_up);
             } else {
                 return view('errors.404', [
                     'record_id' => $id,
-                    'record_name' => ucfirst("timeframe"),
+                    'record_name' => ucfirst("sop_set_up"),
                 ]);
             }
         } else {
@@ -146,17 +146,17 @@ class TimeframesController extends Controller
     }
     
     /**
-     * Update the specified timeframe in storage.
+     * Update the specified sop_set_up in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id timeframe ID
+     * @param int $id sop_set_up ID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        if(Module::hasAccess("Timeframes", "edit")) {
+        if(Module::hasAccess("SOP_Set_ups", "edit")) {
             
-            $rules = Module::validateRules("Timeframes", $request, true);
+            $rules = Module::validateRules("SOP_Set_ups", $request, true);
             
             $validator = Validator::make($request->all(), $rules);
             
@@ -164,9 +164,9 @@ class TimeframesController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();;
             }
             
-            $insert_id = Module::updateRow("Timeframes", $request, $id);
+            $insert_id = Module::updateRow("SOP_Set_ups", $request, $id);
             
-            return redirect()->route(config('laraadmin.adminRoute') . '.timeframes.index');
+            return redirect()->route(config('laraadmin.adminRoute') . '.sop_set_ups.index');
             
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
@@ -174,18 +174,18 @@ class TimeframesController extends Controller
     }
     
     /**
-     * Remove the specified timeframe from storage.
+     * Remove the specified sop_set_up from storage.
      *
-     * @param int $id timeframe ID
+     * @param int $id sop_set_up ID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        if(Module::hasAccess("Timeframes", "delete")) {
-            Timeframe::find($id)->delete();
+        if(Module::hasAccess("SOP_Set_ups", "delete")) {
+            SOP_Set_up::find($id)->delete();
             
             // Redirecting to index() method
-            return redirect()->route(config('laraadmin.adminRoute') . '.timeframes.index');
+            return redirect()->route(config('laraadmin.adminRoute') . '.sop_set_ups.index');
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
         }
@@ -199,14 +199,14 @@ class TimeframesController extends Controller
      */
     public function dtajax(Request $request)
     {
-        $module = Module::get('Timeframes');
-        $listing_cols = Module::getListingColumns('Timeframes');
+        $module = Module::get('SOP_Set_ups');
+        $listing_cols = Module::getListingColumns('SOP_Set_ups');
         
-        $values = DB::table('timeframes')->select($listing_cols)->whereNull('deleted_at');
+        $values = DB::table('sop_set_ups')->select($listing_cols)->whereNull('deleted_at');
         $out = Datatables::of($values)->make();
         $data = $out->getData();
         
-        $fields_popup = ModuleFields::getModuleFields('Timeframes');
+        $fields_popup = ModuleFields::getModuleFields('SOP_Set_ups');
         
         for($i = 0; $i < count($data->data); $i++) {
             for($j = 0; $j < count($listing_cols); $j++) {
@@ -215,7 +215,7 @@ class TimeframesController extends Controller
                     $data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
                 }
                 if($col == $module->view_col) {
-                    $data->data[$i][$j] = '<a href="' . url(config('laraadmin.adminRoute') . '/timeframes/' . $data->data[$i][0]) . '">' . $data->data[$i][$j] . '</a>';
+                    $data->data[$i][$j] = '<a href="' . url(config('laraadmin.adminRoute') . '/sop_set_ups/' . $data->data[$i][0]) . '">' . $data->data[$i][$j] . '</a>';
                 }
                 // else if($col == "author") {
                 //    $data->data[$i][$j];
@@ -224,12 +224,12 @@ class TimeframesController extends Controller
             
             if($this->show_action) {
                 $output = '';
-                if(Module::hasAccess("Timeframes", "edit")) {
-                    $output .= '<a href="' . url(config('laraadmin.adminRoute') . '/timeframes/' . $data->data[$i][0] . '/edit') . '" class="btn btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;"><i class="fa fa-edit"></i></a>';
+                if(Module::hasAccess("SOP_Set_ups", "edit")) {
+                    $output .= '<a href="' . url(config('laraadmin.adminRoute') . '/sop_set_ups/' . $data->data[$i][0] . '/edit') . '" class="btn btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;"><i class="fa fa-edit"></i></a>';
                 }
                 
-                if(Module::hasAccess("Timeframes", "delete")) {
-                    $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.timeframes.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
+                if(Module::hasAccess("SOP_Set_ups", "delete")) {
+                    $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.sop_set_ups.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
                     $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
                     $output .= Form::close();
                 }

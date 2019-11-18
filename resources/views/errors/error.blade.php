@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{{ $response['message'] }}</title>
+        <title>Error Page</title>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:200,400" rel="stylesheet" type="text/css">
 		<link href="{{ asset('la-assets/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
@@ -54,8 +54,7 @@
         <div class="container">
             <div class="content">
 				<i class="fa fa-bug" style="font-size:120px;color:#FF5959;margin-bottom:30px;"></i>
-                <div class="title">{{ $response['message'] }}</div>
-				<p>{!! $response['exception'] !!}</p>
+                
 				@if(Auth::guest())
 					<a href="{{ url('/') }}">Homepage</a> | 
 					<a href="javascript:history.back()">Go Back</a>
