@@ -96,8 +96,8 @@ class UsersController extends Controller
             $update = DB::table("users")
                     ->where('id', $insert_id)
                     ->update([
-                        'password' => $hash,
-                        'confirm_password' => $hash
+                        'password' => $hash
+                        //'confirm_password' => $hash
                     ]);
             $username = $request->username;
             $mail = $request->email;

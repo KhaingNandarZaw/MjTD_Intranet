@@ -74,62 +74,54 @@ class UploadsController extends Controller
             ]);
         }
 
-        if($upload->public == 1) {
-            $upload->public = true;
-        } else {
-            $upload->public = false;
-        }
+        // if($upload->public == 1) {
+        //     $upload->public = true;
+        // } else {
+        //     $upload->public = false;
+        // }
 
-        // Validate if Image is Public
-        if(!$upload->public && !isset(Auth::user()->id)) {
-            return response()->json([
-                'status' => "failure",
-                'message' => "Unauthorized Access 2",
-            ]);
-        }
+        // // Validate if Image is Public
+        // if(!$upload->public && !isset(Auth::user()->id)) {
+        //     return response()->json([
+        //         'status' => "failure",
+        //         'message' => "Unauthorized Access 2",
+        //     ]);
+        // }
 
-        if($upload->public || Entrust::hasRole('SUPER_ADMIN') || Auth::user()->id == $upload->user_id) {
-            
-            $path = $upload->path;
+		$path = $upload->path;
 
-            if(!File::exists($path))
-                abort(404);
-            
-            // Check if thumbnail
-            $size = Input::get('s');
-            if(isset($size)) {
-                if(!is_numeric($size)) {
-                    $size = 150;
-                }
-                $thumbpath = storage_path("thumbnails/".basename($upload->path)."-".$size."x".$size);
-                
-                if(File::exists($thumbpath)) {
-                    $path = $thumbpath;
-                } else {
-                    // Create Thumbnail
-                    LAHelper::createThumbnail($upload->path, $thumbpath, $size, $size, "transparent");
-                    $path = $thumbpath;
-                }
-            }
+		if(!File::exists($path))
+			abort(404);
+		
+		// Check if thumbnail
+		$size = Input::get('s');
+		if(isset($size)) {
+			if(!is_numeric($size)) {
+				$size = 150;
+			}
+			$thumbpath = storage_path("thumbnails/".basename($upload->path)."-".$size."x".$size);
+			
+			if(File::exists($thumbpath)) {
+				$path = $thumbpath;
+			} else {
+				// Create Thumbnail
+				LAHelper::createThumbnail($upload->path, $thumbpath, $size, $size, "transparent");
+				$path = $thumbpath;
+			}
+		}
 
-            $file = File::get($path);
-            $type = File::mimeType($path);
+		$file = File::get($path);
+		$type = File::mimeType($path);
 
-            $download = Input::get('download');
-            if(isset($download)) {
-                return response()->download($path, $upload->name);
-            } else {
-                $response = FacadeResponse::make($file, 200);
-                $response->header("Content-Type", $type);
-            }
-            
-            return $response;
-        } else {
-            return response()->json([
-                'status' => "failure",
-                'message' => "Unauthorized Access 3"
-            ]);
-        }
+		$download = Input::get('download');
+		if(isset($download)) {
+			return response()->download($path, $upload->name);
+		} else {
+			$response = FacadeResponse::make($file, 200);
+			$response->header("Content-Type", $type);
+		}
+		
+		return $response;        
     }
 
     /**
@@ -432,6 +424,220 @@ class UploadsController extends Controller
 					'message' => "Upload not found"
 				]);
 			}
+		} else {
+			return response()->json([
+				'status' => "failure",
+				'message' => "Unauthorized Access"
+			]);
+		}
+	}
+	public function upload_ManualFiles() {
+		if(Module::hasAccess("Uploads", "create")) {
+			$input = Input::all();
+			$today = date('Y-m-d h:i:s');
+
+			if(Input::hasFile('file')) {
+				$file = Input::file('file');
+				
+				$folder = storage_path('uploads');
+				$filename = $file->getClientOriginalName();
+	
+				$date_append = date("Y-m-d-His-");
+				$fileContent = file_get_contents($file->getRealPath());
+				$data = base64_encode($fileContent);
+				
+				if( $data != null ) {
+					$insertedID = DB::table('sop_manual_uploads')->insertGetId([
+						"created_at" => $today,
+						"filename" => $filename,
+						"extension" => pathinfo($filename, PATHINFO_EXTENSION),
+						"hash" => "",
+						"createdBy" => Auth::user()->id,
+						"manual_file" => $data,
+						"status" => 1,
+						"pic_userid" => Input::get('userid')
+					]);
+					// apply unique random hash to file
+					while(true) {
+						$hash = strtolower(str_random(20));
+						if(!DB::table('sop_manual_uploads')->where("hash", $hash)->count()){
+							$upload = DB::table('sop_manual_uploads')->where('id', $insertedID)->update(['hash' => $hash]);
+							break;
+						}
+					}
+					$upload = DB::table('sop_manual_uploads')->where('id', $insertedID)->first();
+					return response()->json([
+						"status" => "success",
+						"upload" => $upload
+					], 200);
+				} else {
+					return response()->json([
+						"status" => "error"
+					], 400);
+				}
+			} else {
+				return response()->json('error: upload file not found.', 400);
+			}
+		} else {
+			return response()->json([
+				'status' => "failure",
+				'message' => "Unauthorized Access"
+			]);
+		}
+	}
+	public function upload_WorkflowFiles() {
+		if(Module::hasAccess("Uploads", "create")) {
+			$input = Input::all();
+			$today = date('Y-m-d h:i:s');
+
+			if(Input::hasFile('file')) {
+				$file = Input::file('file');
+				
+				$folder = storage_path('uploads');
+				$filename = $file->getClientOriginalName();
+	
+				$date_append = date("Y-m-d-His-");
+				$fileContent = file_get_contents($file->getRealPath());
+				$data = base64_encode($fileContent);
+				
+				if( $data != null ) {
+					$insertedID = DB::table('sop_flowchart_uploads')->insertGetId([
+						"created_at" => $today,
+						"filename" => $filename,
+						"extension" => pathinfo($filename, PATHINFO_EXTENSION),
+						"hash" => "",
+						"createdBy" => Auth::user()->id,
+						'flowchart_files' => $data,
+						'status' => 1,
+						"pic_userid" => Input::get('userid')
+					]);
+					// apply unique random hash to file
+					while(true) {
+						$hash = strtolower(str_random(20));
+						if(!DB::table('sop_flowchart_uploads')->where("hash", $hash)->count()){
+							$upload = DB::table('sop_flowchart_uploads')->where('id', $insertedID)->update(['hash' => $hash]);
+							break;
+						}
+					}
+					$upload = DB::table('sop_flowchart_uploads')->where('id', $insertedID)->first();
+					return response()->json([
+						"status" => "success",
+						"upload" => $upload
+					], 200);
+				} else {
+					return response()->json([
+						"status" => "error"
+					], 400);
+				}
+			} else {
+				return response()->json('error: upload file not found.', 400);
+			}
+		} else {
+			return response()->json([
+				'status' => "failure",
+				'message' => "Unauthorized Access"
+			]);
+		}
+	}
+	public function get_manualFile($hash, $name)
+    {
+        $upload = DB::table('sop_manual_uploads')->where("hash", $hash)->first();
+        
+        // Validate Upload Hash & Filename
+        if(!isset($upload->id) || $upload->filename != $name) {
+            return response()->json([
+                'status' => "failure",
+                'message' => "Unauthorized Access 1"
+            ]);
+        }
+
+        if(Entrust::hasRole('SUPER_ADMIN') || Auth::user()->id == $upload->createdBy || Auth::user()->id == $upload->pic_userid) {
+			$file_contents = base64_decode($upload->manual_file);
+            file_put_contents($upload->filename, $file_contents);
+            $path = public_path($upload->filename);
+
+            if(!File::exists($path))
+                abort(404);
+
+            $file = file_get_contents($path);
+			$type = File::mimeType($path);
+			
+            $download = Input::get('download');
+            if(isset($download)) {
+                return response()->download($path, $upload->filename);
+            } else {
+                $response = FacadeResponse::make($file, 200);
+                $response->header("Content-Type", $type);
+            }
+            
+            return $response;
+        } else {
+            return response()->json([
+                'status' => "failure",
+                'message' => "Unauthorized Access 3"
+            ]);
+        }
+	}
+	public function get_workflowFile($hash, $name)
+    {
+        $upload = DB::table('sop_flowchart_uploads')->where("hash", $hash)->first();
+        
+        // Validate Upload Hash & Filename
+        if(!isset($upload->id) || $upload->filename != $name) {
+            return response()->json([
+                'status' => "failure",
+                'message' => "Unauthorized Access 1"
+            ]);
+        }
+
+        if(Entrust::hasRole('SUPER_ADMIN') || Auth::user()->id == $upload->createdBy || Auth::user()->id == $upload->pic_userid) {
+			$file_contents = base64_decode($upload->flowchart_files);
+            file_put_contents($upload->filename, $file_contents);
+            $path = public_path($upload->filename);
+
+            if(!File::exists($path))
+                abort(404);
+
+            $file = file_get_contents($path);
+			$type = File::mimeType($path);
+			
+            $download = Input::get('download');
+            if(isset($download)) {
+                return response()->download($path, $upload->filename);
+            } else {
+                $response = FacadeResponse::make($file, 200);
+                $response->header("Content-Type", $type);
+            }
+            
+            return $response;
+        } else {
+            return response()->json([
+                'status' => "failure",
+                'message' => "Unauthorized Access 3"
+            ]);
+        }
+	}
+	public function uploaded_flowchartFiles(Request $request)
+    {
+		if(Module::hasAccess("Uploads", "view")) {
+			$pic_id = $request['pic_id'];
+			$uploads = DB::table('sop_flowchart_uploads')->select('id', 'pic_userid', 'status', 'filename', 'extension', 'hash')->where("pic_userid", $pic_id)->get();
+			
+			return response()->json(['uploads' => $uploads]);
+		} else {
+			return response()->json([
+				'status' => "failure",
+				'message' => "Unauthorized Access"
+			]);
+		}
+	}
+	public function uploaded_manualFiles(Request $request)
+    {
+		if(Module::hasAccess("Uploads", "view")) {
+			$pic_id = $request['pic_id'];
+			$uploads = DB::table('sop_manual_uploads')->select('id', 'pic_userid', 'status', 'filename', 'extension', 'hash')->where("pic_userid", $pic_id)->get();
+			
+			return response()->json(['uploads' => $uploads]);
 		} else {
 			return response()->json([
 				'status' => "failure",

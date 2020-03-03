@@ -87,7 +87,7 @@
             
             @la_access("SOP_Management_Types", "delete")
                 {{ Form::open(['route' => [config('laraadmin.adminRoute') . '.sop_management_types.destroy', $sop_management_type->id], 'method' => 'delete', 'style'=>'display:inline']) }}
-                    <button class="btn btn-default btn-delete btn-xs" type="submit"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-default btn-delete btn-xs" type="submit"><i class="fa fa-trash"></i></button>
                 {{ Form::close() }}
             @endla_access
         </div>

@@ -9,15 +9,14 @@
 
 namespace App\Models;
 
-use App\Models\Frame;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SOP_Set_up extends Model
+class Task_pic extends Model
 {
     use SoftDeletes;
     
-    protected $table = 'sop_set_ups';
+    protected $table = 'task_pics';
     
     protected $hidden = [
     
@@ -26,10 +25,4 @@ class SOP_Set_up extends Model
     protected $guarded = [];
     
     protected $dates = ['deleted_at'];
-
-    public function timeframe()
-    {
-        return $this->hasMany(Frame::class);
-    }
-
 }

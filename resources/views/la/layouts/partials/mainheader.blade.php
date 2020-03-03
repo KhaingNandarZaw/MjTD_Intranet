@@ -15,7 +15,7 @@
 	<!-- Header Navbar -->
 	<nav class="navbar navbar-static-top" role="navigation">
 	@if(LAConfigs::getByKey('layout') == 'layout-top-nav')
-		<div class="container">
+		<div > <!--  class="container" -->
 			<div class="navbar-header">
 				<a href="{{ url(config('laraadmin.adminRoute')) }}" class="navbar-brand"><b>{{ LAConfigs::getByKey('sitename_part1') }}</b>{{ LAConfigs::getByKey('sitename_part2') }}</a>
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">

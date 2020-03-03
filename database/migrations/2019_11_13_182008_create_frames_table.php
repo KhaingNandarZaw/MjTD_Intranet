@@ -20,7 +20,7 @@ class CreateFramesTable extends Migration
      */
     public function up()
     {
-        Module::generate("Frames", 'frames', 'name', 'fa-angle-double-right', [
+        Module::generate("Frames", 'frames', 'name', 'fa-gear', [
             [
                 "colname" => "name",
                 "label" => "Name",
@@ -29,6 +29,16 @@ class CreateFramesTable extends Migration
                 "defaultvalue" => "",
                 "minlength" => 1,
                 "maxlength" => 255,
+                "required" => true,
+                "listing_col" => true
+            ], [
+                "colname" => "use_task",
+                "label" => "Can use for Task?",
+                "field_type" => "Checkbox",
+                "unique" => false,
+                "defaultvalue" => "0",
+                "minlength" => 0,
+                "maxlength" => 0,
                 "required" => true,
                 "listing_col" => true
             ]

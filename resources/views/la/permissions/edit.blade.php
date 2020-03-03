@@ -22,10 +22,7 @@
     </div>
 @endif
 
-<div class="box">
-    <div class="box-header">
-        
-    </div>
+<div class="box box-green">
     <div class="box-body">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -37,9 +34,13 @@
 					@la_input($module, 'display_name')
 					@la_input($module, 'description')
                     --}}
-                    <br>
-                    <div class="form-group">
-                        {!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/permissions') }}" class="btn btn-default pull-right">Cancel</a>
+                    <div class="row">
+                        <div class="col-sm-6" align="right">
+                            {!! Form::submit( 'Update', ['class'=>'btn btn-primary btn-sm']) !!}
+                        </div>
+                        <div class="col-sm-6" align="left">
+                            <a href="{{ url(config('laraadmin.adminRoute') . '/permissions') }}" class="btn btn-default btn-sm">Cancel</a>
+                        </div>
                     </div>
                 {!! Form::close() !!}
             </div>
