@@ -1,10 +1,11 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "")
-@section("contentheader_description", "")
 @section("section", "Users")
 @section("sub_section", "Listing")
 @section("htmlheader_title", "User Listing")
+
+@section("contentheader_title", "Users")
+@section("contentheader_description", "Users listing")
 
 @section("main-content")
 
@@ -33,7 +34,7 @@
             <th>{{ Lang::has('words.'.$col)? Lang::get('words.'.$col) : ucfirst($col) }}
             @endforeach
             @if($show_actions)
-            <th>{{trans('words.actions')}}</th>
+            <th>Actions</th>
             @endif
         </tr>
         </thead>

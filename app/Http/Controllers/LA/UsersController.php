@@ -84,14 +84,13 @@ class UsersController extends Controller
             if($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-     
+    
             $insert_id = Module::insert("Users", $request);
  
-
-            //$hash = bcrypt('1111100000');
+            $hash = bcrypt('123456');
             // Modify Code
-            $password = LAHelper::gen_password();
-            $hash = bcrypt($password);
+            // $password = LAHelper::gen_password();
+            // $hash = bcrypt($password);
             
             $update = DB::table("users")
                     ->where('id', $insert_id)
@@ -273,7 +272,7 @@ class UsersController extends Controller
                 }
                 
                 if(Module::hasAccess("Users", "delete")) {
-                    $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.users.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline','class' => 'form-delete']);
+                    $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.users.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
                     $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash"></i></button>';
                     $output .= Form::close();
                 }

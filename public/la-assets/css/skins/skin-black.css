@@ -11,7 +11,7 @@
   color: #333;
 }
 .skin-black .main-header .navbar-brand {
-  color: #333;
+  /* color: #333; */
   border-right: 1px solid #eee;
 }
 .skin-black .main-header > .navbar {

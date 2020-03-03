@@ -9,7 +9,6 @@
 
 namespace App\Models;
 
-use App\Models\SOP_Set_up;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,5 +25,4 @@ class Frame extends Model
     protected $guarded = [];
     
     protected $dates = ['deleted_at'];
-
 }

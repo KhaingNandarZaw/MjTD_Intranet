@@ -123,6 +123,17 @@ class CreateUsersTable extends Migration
                 "required" => true,
                 "listing_col" => false,
                 "popup_vals" => "@departments",
+            ], [
+                "colname" => "status",
+                "label" => "Status",
+                "field_type" => "Dropdown",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => false,
+                "listing_col" => false,
+                "popup_vals" => ["Active","Inactive"],
             ]
         ]);
         

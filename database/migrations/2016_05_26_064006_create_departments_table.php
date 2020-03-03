@@ -14,7 +14,7 @@ use Dwij\Laraadmin\Models\Module;
 class CreateDepartmentsTable extends Migration
 {
     /**
-     * Run the migrations.
+     * Migration generate Module Table Schema by LaraAdmin
      *
      * @return void
      */
@@ -32,25 +32,46 @@ class CreateDepartmentsTable extends Migration
                 "required" => true,
                 "listing_col" => true
             ], [
-                "colname" => "tags",
-                "label" => "Tags",
-                "field_type" => "Taginput",
+                "colname" => "status",
+                "label" => "Status",
+                "field_type" => "Integer",
                 "unique" => false,
-                "defaultvalue" => [],
+                "defaultvalue" => "1",
                 "minlength" => 0,
-                "maxlength" => 0,
+                "maxlength" => 50,
                 "required" => false,
                 "listing_col" => false
             ], [
-                "colname" => "color",
-                "label" => "Color",
-                "field_type" => "String",
+                "colname" => "parent",
+                "label" => "Parent",
+                "field_type" => "Integer",
                 "unique" => false,
-                "defaultvalue" => "",
+                "defaultvalue" => "0",
                 "minlength" => 0,
                 "maxlength" => 50,
                 "required" => true,
-                "listing_col" => true
+                "listing_col" => false
+            ], [
+                "colname" => "hierarchy",
+                "label" => "Hierarchy",
+                "field_type" => "Integer",
+                "unique" => false,
+                "defaultvalue" => "1",
+                "minlength" => 0,
+                "maxlength" => 50,
+                "required" => true,
+                "listing_col" => false
+            ], [
+                "colname" => "manager_id",
+                "label" => "Department Manager",
+                "field_type" => "Dropdown",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => false,
+                "listing_col" => false,
+                "popup_vals" => "@users",
             ]
         ]);
         
@@ -71,6 +92,7 @@ class CreateDepartmentsTable extends Migration
             "popup_vals" => ["Employee", "Client"]
         ]
         # Format Details: Check http://laraadmin.com/docs/migrations_cruds#schema-ui-types
+        
         colname: Database column name. lowercase, words concatenated by underscore (_)
         label: Label of Column e.g. Name, Cost, Is Public
         field_type: It defines type of Column in more General way.
@@ -83,7 +105,7 @@ class CreateDepartmentsTable extends Migration
         popup_vals: These are values for MultiSelect, TagInput and Radio Columns. Either connecting @tables or to list []
         */
     }
-
+    
     /**
      * Reverse the migrations.
      *
@@ -91,7 +113,7 @@ class CreateDepartmentsTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('departments')) {
+        if(Schema::hasTable('departments')) {
             Schema::drop('departments');
         }
     }

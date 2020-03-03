@@ -10,6 +10,7 @@
 namespace App\Http\Controllers\LA;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Auth;
@@ -26,25 +27,6 @@ class DepartmentsController extends Controller
 {
 	public $show_action = true;
 	
-	/**
-	 * Display a listing of the Departments.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		$module = Module::get('Departments');
-		
-		if(Module::hasAccess($module->id)) {
-			return View('la.departments.index', [
-				'show_actions' => $this->show_action,
-				'listing_cols' => Module::getListingColumns('Departments'),
-				'module' => $module
-			]);
-		} else {
-            return redirect(config('laraadmin.adminRoute')."/");
-        }
-	}
 
 	/**
 	 * Show the form for creating a new department.
@@ -91,61 +73,75 @@ class DepartmentsController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function index()
 	{
 		if(Module::hasAccess("Departments", "view")) {
+			$module = Module::get('Departments');
+			$modules = Module::all();
+			// Send Menus with No Parent to Views
+			$menuItems = Department::where("parent", 0)->where("status", 1)->orderBy('hierarchy', 'asc')->get();
 			
-			$department = Department::find($id);
-			if(isset($department->id)) {
-				$module = Module::get('Departments');
-				$module->row = $department;
-				
-				return view('la.departments.show', [
-					'module' => $module,
-					'view_col' => $module->view_col,
-					'no_header' => true,
-					'no_padding' => "no-padding"
-				])->with('department', $department);
-			} else {
-				return view('errors.404', [
-					'record_id' => $id,
-					'record_name' => ucfirst("department"),
-				]);
-			}
+			return View('la.departments.show', [
+				'menus' => $menuItems,
+				'modules' => $modules,
+				'module' => $module
+			]);
+			
 		} else {
 			return redirect(config('laraadmin.adminRoute')."/");
 		}
 	}
 
-	/**
-	 * Show the form for editing the specified department.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		if(Module::hasAccess("Departments", "edit")) {			
-			$department = Department::find($id);
-			if(isset($department->id)) {	
-				$module = Module::get('Departments');
-				
-				$module->row = $department;
-				
-				return view('la.departments.edit', [
-					'module' => $module,
-					'view_col' => $module->view_col,
-				])->with('department', $department);
-			} else {
-				return view('errors.404', [
-					'record_id' => $id,
-					'record_name' => ucfirst("department"),
-				]);
-			}
-		} else {
-			return redirect(config('laraadmin.adminRoute')."/");
-		}
+	public function department_users()
+    {
+        $dept_id = Input::get('dept_id');
+        $module = Module::get('Users');
+        $listing_cols = Module::getListingColumns('Users');
+        
+		$values = DB::table('users')->select($listing_cols)->whereNull('deleted_at')->where('department', $dept_id);
+        $out = Datatables::of($values)->make();
+        $data = $out->getData();
+        
+        $fields_popup = ModuleFields::getModuleFields('Users');
+        
+        for($i = 0; $i < count($data->data); $i++) {
+            for($j = 0; $j < count($listing_cols); $j++) {
+                $col = $listing_cols[$j];
+                if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@")) {
+                    $data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
+                }
+            }
+        }
+        $out->setData($data);
+        return $out;
 	}
+
+	public function update_hierarchy()
+    {
+        $parents = Input::get('jsonData');
+        $parent_id = 0;
+        
+        for($i = 0; $i < count($parents); $i++) {
+            $this->apply_hierarchy($parents[$i], $i + 1, $parent_id);
+        }
+        
+        return $parents;
+	}
+	
+	function apply_hierarchy($departmentItem, $num, $parent_id)
+    {
+        $department = Department::find($departmentItem['id']);
+        $department->parent = $parent_id;
+        $department->hierarchy = $num;
+        $department->save();
+        
+        // apply hierarchy to children if exists
+        if(isset($departmentItem['children'])) {
+            for($i = 0; $i < count($departmentItem['children']); $i++) {
+                $this->apply_hierarchy($departmentItem['children'][$i], $i + 1, $departmentItem['id']);
+            }
+        }
+    }
 
 	/**
 	 * Update the specified department in storage.
@@ -195,53 +191,5 @@ class DepartmentsController extends Controller
 		} else {
 			return redirect(config('laraadmin.adminRoute')."/");
 		}
-	}
-	
-	/**
-	 * Datatable Ajax fetch
-	 *
-	 * @return
-	 */
-	public function dtajax(Request $request)
-	{
-		$module = Module::get('Departments');
-		$listing_cols = Module::getListingColumns('Departments');
-
-		$values = DB::table('departments')->select($listing_cols)->whereNull('deleted_at');
-		$out = Datatables::of($values)->make();
-		$data = $out->getData();
-
-		$fields_popup = ModuleFields::getModuleFields('Departments');
-		
-		for($i=0; $i < count($data->data); $i++) {
-			for ($j=0; $j < count($listing_cols); $j++) { 
-				$col = $listing_cols[$j];
-				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@")) {
-					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
-				}
-				if($col == $module->view_col) {
-					$data->data[$i][$j] = '<a href="'.url(config('laraadmin.adminRoute') . '/departments/'.$data->data[$i][0]).'">'.$data->data[$i][$j].'</a>';
-				}
-				// else if($col == "author") {
-				//    $data->data[$i][$j];
-				// }
-			}
-			
-			if($this->show_action) {
-				$output = '';
-				if(Module::hasAccess("Departments", "edit")) {
-					$output .= '<a href="'.url(config('laraadmin.adminRoute') . '/departments/'.$data->data[$i][0].'/edit').'" class="btn btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;"><i class="fa fa-edit"></i></a>';
-				}
-				
-				if(Module::hasAccess("Departments", "delete")) {
-					$output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.departments.destroy', $data->data[$i][0]], 'method' => 'delete', 'style'=>'display:inline']);
-					$output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
-					$output .= Form::close();
-				}
-				$data->data[$i][] = (string)$output;
-			}
-		}
-		$out->setData($data);
-		return $out;
 	}
 }

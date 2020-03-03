@@ -108,7 +108,7 @@ var cntFiles = null;
 $(function () {
 	@la_access("Uploads", "create")
 	fm_dropzone_main = new Dropzone("#fm_dropzone_main", {
-        maxFilesize: 2,
+        maxFilesize: 10,
         acceptedFiles: "image/*,application/pdf",
         init: function() {
             this.on("complete", function(file) {

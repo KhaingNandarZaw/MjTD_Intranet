@@ -57,7 +57,7 @@ use Dwij\Laraadmin\Models\ModuleFields;
 		</div>
 		
 		<div class="col-md-1 actions">
-			<button module_name="{{ $module->name }}" module_id="{{ $module->id }}" class="btn btn-default btn-delete btn-xs delete_module"><i class="fa fa-times"></i></button>
+			<button module_name="{{ $module->name }}" module_id="{{ $module->id }}" class="btn btn-default btn-delete btn-xs delete_module"><i class="fa fa-trash"></i></button>
 		</div>
 	</div>
 

@@ -17,7 +17,7 @@
 
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
-		@if(LAConfigs::getByKey('layout') == 'layout-top-nav') <div class="container"> @endif
+		<!-- @if(LAConfigs::getByKey('layout') == 'layout-top-nav') <div class="container"> @endif -->
 		@if(!isset($no_header))
 			@include('la.layouts.partials.contentheader')
 		@endif

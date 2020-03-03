@@ -4,6 +4,9 @@
 @section("section_url", url(config('laraadmin.adminRoute') . '/users'))
 @section("sub_section", "Create") 
 
+@section("contentheader_title", "Users")
+@section("contentheader_description", "Create New User")
+
 @section("main-content")
 @if (count($errors) > 0)
     <div class="alert alert-danger">

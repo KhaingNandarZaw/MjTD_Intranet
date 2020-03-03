@@ -8,7 +8,7 @@
 
 @section("headerElems")
 @la_access("Permissions", "create")
-    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Permission</button>
+    <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#AddModal"><i class="fa fa-plus"> Add Permission</i></button>
 @endla_access
 @endsection
 
@@ -24,17 +24,17 @@
     </div>
 @endif
 
-<div class="box box-success">
+<div class="box box-green">
     <!--<div class="box-header"></div>-->
     <div class="box-body">
-        <table id="example1" class="table table-bordered">
+        <table id="example1" class="table table-bordered table-striped">
         <thead>
-        <tr class="success">
+        <tr>
             @foreach( $listing_cols as $col )
-            <th>{{ $module->fields[$col]['label'] or ucfirst($col) }}</th>
+            <th>{{ Lang::has('words.'.$col)? Lang::get('words.'.$col) : ucfirst($col) }}
             @endforeach
             @if($show_actions)
-            <th>Actions</th>
+            <th>{{trans('words.actions')}}</th>
             @endif
         </tr>
         </thead>
@@ -47,7 +47,7 @@
 
 @la_access("Permissions", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -64,10 +64,14 @@
 					@la_input($module, 'description')
                     --}}
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                {!! Form::submit( 'Submit', ['class'=>'btn btn-success']) !!}
+                <div class="row">
+                    <div class="col-sm-6" align="right">
+                        {!! Form::submit( 'Save', ['class'=>'btn btn-primary btn-sm']) !!}
+                    </div>
+                    <div class="col-sm-6" align="left">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
             {!! Form::close() !!}
         </div>

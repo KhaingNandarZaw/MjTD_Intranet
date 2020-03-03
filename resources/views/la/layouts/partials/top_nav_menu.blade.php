@@ -21,6 +21,13 @@
 				<?php echo LAHelper::print_menu_topnav($menu); ?>
 			@endif
 		@endforeach
+		<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="{{ url(config('laraadmin.adminRoute')) }}">Task Management <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li><a href="{{ url(config('laraadmin.adminRoute') . '/task_management/task') }}"><i class='fa fa-cube'></i>Tasks</a><li>
+				<li><a href="{{ url(config('laraadmin.adminRoute') . '/task_management/task_assign') }}"><i class='fa fa-cube'></i>Task Assign</a><li>
+				<li><a href="{{ url(config('laraadmin.adminRoute') . '/task_management/check_task') }}"><i class='fa fa-cube'></i>Check Task</a><li>
+			</ul>
+		</li>
 	</ul>
 	@if(LAConfigs::getByKey('sidebar_search'))
 	<form class="navbar-form navbar-left" role="search">

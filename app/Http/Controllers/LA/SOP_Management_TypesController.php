@@ -230,7 +230,7 @@ class SOP_Management_TypesController extends Controller
                 
                 if(Module::hasAccess("SOP_Management_Types", "delete")) {
                     $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.sop_management_types.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
-                    $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
+                    $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash"></i></button>';
                     $output .= Form::close();
                 }
                 $data->data[$i][] = (string)$output;

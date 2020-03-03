@@ -19,8 +19,10 @@ use Datatables;
 use Collective\Html\FormFacade as Form;
 use Dwij\Laraadmin\Models\Module;
 use Dwij\Laraadmin\Models\ModuleFields;
+use Zizaco\Entrust\EntrustFacade as Entrust;
 
 use App\Models\Permission;
+use App\Role;
 
 class PermissionsController extends Controller
 {
@@ -98,11 +100,14 @@ class PermissionsController extends Controller
                 $module = Module::get('Permissions');
                 $module->row = $permission;
                 
+                $roles = Role::all();
+
                 return view('la.permissions.show', [
                     'module' => $module,
                     'view_col' => $module->view_col,
                     'no_header' => true,
-                    'no_padding' => "no-padding"
+                    'no_padding' => "no-padding",
+                    'roles' => $roles
                 ])->with('permission', $permission);
             } else {
                 return view('errors.404', [
@@ -111,7 +116,7 @@ class PermissionsController extends Controller
                 ]);
             }
         } else {
-            return redirect(config('laraadmin.adminRoute') . "/");
+            return redirect(config('laraadmin.adminRoute')."/");
         }
     }
     
@@ -225,12 +230,12 @@ class PermissionsController extends Controller
             if($this->show_action) {
                 $output = '';
                 if(Module::hasAccess("Permissions", "edit")) {
-                    $output .= '<a href="' . url(config('laraadmin.adminRoute') . '/permissions/' . $data->data[$i][0] . '/edit') . '" class="btn btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;"><i class="fa fa-edit"></i></a>';
+                    $output .= '<a href="' . url(config('laraadmin.adminRoute') . '/permissions/' . $data->data[$i][0] . '/edit') . '" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i></a>';
                 }
                 
                 if(Module::hasAccess("Permissions", "delete")) {
                     $output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.permissions.destroy', $data->data[$i][0]], 'method' => 'delete', 'style' => 'display:inline']);
-                    $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
+                    $output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash"></i></button>';
                     $output .= Form::close();
                 }
                 $data->data[$i][] = (string)$output;
@@ -238,5 +243,40 @@ class PermissionsController extends Controller
         }
         $out->setData($data);
         return $out;
+    }
+
+    /**
+     * Save the  permissions for role in permission view.
+     *
+     * @param  int  $id
+     * @return Redirect to permisssions page
+     */
+    public function save_permissions(Request $request, $id)
+    {
+        if(Entrust::hasRole('SUPER_ADMIN')) {
+            $permission = Permission::find($id);
+            $module = Module::get('Permissions');
+            $module->row = $permission;
+            $roles = Role::all();
+            
+            foreach ($roles as $role) {
+                $permi_role_id = 'permi_role_'.$role->id;
+                $permission_set = $request->$permi_role_id;
+                if(isset($permission_set)) {
+                    $query = DB::table('permission_role')->where('permission_id', $id)->where('role_id', $role->id);
+                    if($query->count() == 0) {
+                        DB::insert('insert into permission_role (permission_id, role_id) values (?, ?)', [$id, $role->id]);
+                    }
+                } else {
+                    $query = DB::table('permission_role')->where('permission_id', $id)->where('role_id', $role->id);
+                    if($query->count() > 0) {
+                        DB::delete('delete from permission_role where permission_id = "'.$id.'" AND role_id = "'.$role->id.'" ');
+                    }
+                }
+            }
+            return redirect(config('laraadmin.adminRoute') . '/permissions/'.$id."#tab-access");
+        } else {
+            return redirect(config('laraadmin.adminRoute')."/");
+        }
     }
 }

@@ -164,7 +164,7 @@ class BackupsController extends Controller
 				
 				if(Module::hasAccess("Backups", "delete")) {
 					$output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.backups.destroy', $data->data[$i][0]], 'method' => 'delete', 'style'=>'display:inline']);
-					$output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
+					$output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-trash"></i></button>';
 					$output .= Form::close();
 				}
 				$data->data[$i][] = (string)$output;

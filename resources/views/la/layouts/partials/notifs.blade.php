@@ -152,6 +152,7 @@
 							</li>
 						</ul>
 					</li>
+					<!-- <li><a href="<?= URL::to('/logout') ?>"><i class="fa fa-sign-out"></i> Sign Out</a></li> -->
 				@endif
 				@if(LAConfigs::getByKey('show_rightsidebar'))
 				<!-- Control Sidebar Toggle Button -->

@@ -18,7 +18,7 @@
         </div>
         <div class="box-footer no-padding">
         	<ul data-toggle="ajax-tab" class="nav nav-tabs profile" role="tablist">
-				<li class=""><a href="{{ url(config('laraadmin.adminRoute') . '/users') }}" data-toggle="tooltip" data-placement="right" title="Back to users"><i class="fa fa-chevron-left"></i></a></li>
+				<li class=""><a href="javascript:history.back()" data-toggle="tooltip" data-placement="right" title="Back to users"><i class="fa fa-chevron-left"></i></a></li>
 				<li class="active"><a role="tab" data-toggle="tab" class="active" href="#tab-info" data-target="#tab-info"><i class="fa fa-bars"></i> General Info</a></li>
 				@if($user->id == Auth::user()->id || Entrust::hasRole("SUPER_ADMIN"))
 					<li class=""><a role="tab" data-toggle="tab" href="#tab-account-settings" data-target="#tab-account-settings"><i class="fa fa-key"></i> Account settings</a></li>
@@ -32,15 +32,15 @@
 								<h4>General Info</h4>
 							</div>
 							<div class="panel-body">
-								@la_display($module, 'name')
-								@la_display($module, 'designation')
-								@la_display($module, 'gender')
-								@la_display($module, 'date_birth')
-								@la_display($module, 'mobile')
-								@la_display($module, 'mobile2')
-								@la_display($module, 'email')
-								@la_display($module, 'department')
-								@la_display($module, 'address')
+								@la_display($module, 'name', '', 'write')
+								@la_display($module, 'designation', '', 'write')
+								@la_display($module, 'gender', '', 'write')
+								@la_display($module, 'date_birth', '', 'write')
+								@la_display($module, 'mobile', '', 'write')
+								@la_display($module, 'mobile2', '', 'write')
+								@la_display($module, 'email', '', 'write')
+								@la_display($module, 'department', '', 'write')
+								@la_display($module, 'address', '', 'write')
 							</div>
 						</div>
 					</div>
