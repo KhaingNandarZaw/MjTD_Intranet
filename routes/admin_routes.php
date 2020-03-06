@@ -44,6 +44,7 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_PANEL']], 
 	Route::post(config('laraadmin.adminRoute') . '/upload_manualfiles', 'LA\UploadsController@upload_ManualFiles');
 	Route::post(config('laraadmin.adminRoute') . '/upload_workflowfiles', 'LA\UploadsController@upload_WorkflowFiles');
 	Route::get(config('laraadmin.adminRoute') . '/uploaded_files', 'LA\UploadsController@uploaded_files');
+	Route::post(config('laraadmin.adminRoute') . '/uploaded_files_byid', 'LA\UploadsController@uploaded_files_byid');
 	Route::post(config('laraadmin.adminRoute') . '/uploaded_task_attachments', 'LA\UploadsController@uploaded_task_attachments');
 	Route::post(config('laraadmin.adminRoute') . '/uploaded_flowchartFiles', 'LA\UploadsController@uploaded_flowchartFiles');
 	Route::post(config('laraadmin.adminRoute') . '/uploaded_manualFiles', 'LA\UploadsController@uploaded_manualFiles');

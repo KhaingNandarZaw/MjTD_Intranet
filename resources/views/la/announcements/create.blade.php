@@ -28,13 +28,21 @@
             @la_input($module, 'icon')
             @la_input($module, 'startdate')
             @la_input($module, 'enddate')
+            <div class="is_sent">
+            @la_input($module, 'is_sent')
+            </div>
+            <div class="email">
+                @la_input($module, 'email')
+            </div>
             <div class="form-group">
                 <input class="form-control input-sm" placeholder="Enter File" data-rule-minlength="0" data-rule-maxlength="0" required="1" name="hidden_file" type="hidden" value="[]" aria-required="true">
                 <div class="file" id="fm_dropzone_main" name="file">
                     <div class="dz-message"><i class="fa fa-cloud-upload"></i><br>Drop files here to upload</div>
                 </div>
+                
                 <div class="uploaded_files">
-                    <ol></ol>
+                    <ol>
+                    </ol>
                 </div>
             </div>
             <div class="form-group">
@@ -55,6 +63,7 @@
 
 @push('scripts')
 <script src="{{ asset('la-assets/plugins/iconpicker/fontawesome-iconpicker.js') }}"></script>
+
 <script>
 $(function () {
     $("#announcement-add-form").validate({
@@ -80,10 +89,11 @@ $(function () {
             });
         },
         success: function(file, response){
-            getUploadedFiles(response.upload);
+            getUploadedFile(response.upload);
         }
     });
-    function getUploadedFiles(upload) {
+});
+    function getUploadedFile(upload) {
         $hinput = $("input[name=hidden_file]");
         
         var hiddenFIDs = JSON.parse($hinput.val());
@@ -102,8 +112,58 @@ $(function () {
         }
         $hinput.val(JSON.stringify(hiddenFIDs));
         var fileImage = upload.name;
-        $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/files/"+upload.hash+"/"+upload.name+"'>"+fileImage+"</a><a href='#' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
+        $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/files/"+upload.hash+"/"+upload.name+"'>"+fileImage+"</a><a href='#' onclick='deleteManualFile("+upload.id+")' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
     }
-});
+
+    function deleteManualFile(id){
+    alert(id);
+    $.ajax({
+        
+        dataType: 'json',
+        url : "{{ url(config('laraadmin.adminRoute') . '/uploads_delete_file') }}",
+        type: 'POST',
+        data : {'_token': '{{ csrf_token() }}', 'file_id' : id},
+        success: function ( response ) {
+            $hinput = $("input[name=hidden_file]");
+            var hiddenFIDs = JSON.parse($hinput.val());
+            for( var i = 0; i < hiddenFIDs.length; i++){ 
+                if ( hiddenFIDs[i] == id) {
+                    hiddenFIDs.splice(i, 1); 
+                    i--;
+                }
+            }
+            $hinput.val(JSON.stringify(hiddenFIDs));
+            getUploadedFiles();
+        }
+    });
+}
+
+function getUploadedFiles(){
+    $(".uploaded_files ol").empty();
+    var hinput = $("input[name=hidden_file]").val();
+    $.ajax({
+        dataType: 'json',
+        url : "{{ url(config('laraadmin.adminRoute') . '/uploaded_files_byid') }}",
+        type: 'POST',
+        data : {'_token': '{{ csrf_token() }}', 'hinput' : hinput},
+        success: function ( json ) {
+            var uploadedFiles = json.uploads;
+            for (var index = 0; index < uploadedFiles.length; index++) {
+                var upload = uploadedFiles[index];
+                getUploadedFile(upload);
+            }
+        }
+    });
+}
+
+</script>
+<script>
+$(document).ready(function(){
+    $(".email").hide();
+    $(".is_sent").click(function () {
+        $(".email").toggle();
+    })
+})
+
 </script>
 @endpush

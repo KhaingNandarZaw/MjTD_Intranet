@@ -74,7 +74,9 @@ class UsersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
+    
     {
+        
         if(Module::hasAccess("Users", "create")) {
             
             $rules = Module::validateRules("Users", $request);
@@ -92,12 +94,12 @@ class UsersController extends Controller
             // $password = LAHelper::gen_password();
             // $hash = bcrypt($password);
             
-            $update = DB::table("users")
-                    ->where('id', $insert_id)
-                    ->update([
-                        'password' => $hash,
-                        'confirm_password' => $hash
-                    ]);
+            // $update = DB::table("users")
+            //         ->where('id', $insert_id)
+            //         ->update([
+            //             'password' => $hash,
+            //             'confirm_password' => $hash
+            //         ]);
             $username = $request->username;
             $mail = $request->email;
             $address = $mail;

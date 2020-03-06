@@ -66,7 +66,7 @@
                                 foreach($default_val_arr as $uploadId) {
                                     $manual = \App\Models\Upload::find($uploadId);
                                     if(isset($manual->id)) {             
-                                        $uploads_html .= '<li class="list-group-item"><a class="preview" target="_blank" href="' . url("manualfiles/" . $manual->hash . DIRECTORY_SEPARATOR . $manual->filename) . '">
+                                        $uploads_html .= '<li class="list-group-item"><a class="preview" target="_blank" href="' . url("manualfiles/" . $manual->hash . DIRECTORY_SEPARATOR . $manual->filename) . '" >
                                                 ' . $manual->name . '</a><a href="#" class="btn btn-xs btn-danger pull-right"><i class="fa fa-trash"></i></a></li>';
                                     }
                                     $value = $uploads_html;
@@ -110,12 +110,13 @@ tr.group, tr.group:hover {
 @endpush
 
 @push('scripts')
+<script src="{{ asset('la-assets/plugins/iconpicker/fontawesome-iconpicker.js') }}"></script>
 <script>
 $(function () {
     $("#announcement-edit-form").validate({
         
     });
-    
+    $("input[name=icon]").iconpicker();
     new Dropzone("div.file", {        
         maxFilesize: 500,
         maxFiles : 10,
@@ -134,31 +135,73 @@ $(function () {
             });
         },
         success: function(file, response){
-            getUploadedFiles(response.upload);
+            getUploadedFile(response.upload);
         }
     });
-    function getUploadedFiles(upload) {
-        $hinput = $("input[name=hidden_file]");
-        
-        var hiddenFIDs = JSON.parse($hinput.val());
-        // check if upload_id exists in array
-        var upload_id_exists = false;
-        for (var key in hiddenFIDs) {
-            if (hiddenFIDs.hasOwnProperty(key)) {
-                var element = hiddenFIDs[key];
-                if(element == upload.id) {
-                    upload_id_exists = true;
-                }
+});
+
+
+function getUploadedFile(upload) {
+    $hinput = $("input[name=hidden_file]");
+    
+    var hiddenFIDs = JSON.parse($hinput.val());
+    // check if upload_id exists in array
+    var upload_id_exists = false;
+    for (var key in hiddenFIDs) {
+        if (hiddenFIDs.hasOwnProperty(key)) {
+            var element = hiddenFIDs[key];
+            if(element == upload.id) {
+                upload_id_exists = true;
             }
         }
-        if(!upload_id_exists) {
-            hiddenFIDs.push(upload.id);
-        }
-        $hinput.val(JSON.stringify(hiddenFIDs));
-        var fileImage = upload.name;
-        $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/files/"+upload.hash+"/"+upload.name+"'>"+fileImage+"</a><a href='#' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
     }
-});
+    if(!upload_id_exists) {
+        hiddenFIDs.push(upload.id);
+    }
+    $hinput.val(JSON.stringify(hiddenFIDs));
+    var fileImage = upload.name;
+    $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/files/"+upload.hash+"/"+upload.name+"'>"+fileImage+"</a><a href='#' onclick='deleteManualFile("+upload.id+")' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
+}
+
+function deleteManualFile(id){
+    alert(id);
+    $.ajax({
+        
+        dataType: 'json',
+        url : "{{ url(config('laraadmin.adminRoute') . '/uploads_delete_file') }}",
+        type: 'POST',
+        data : {'_token': '{{ csrf_token() }}', 'file_id' : id},
+        success: function ( response ) {
+            $hinput = $("input[name=hidden_file]");
+            var hiddenFIDs = JSON.parse($hinput.val());
+            for( var i = 0; i < hiddenFIDs.length; i++){ 
+                if ( hiddenFIDs[i] == id) {
+                    hiddenFIDs.splice(i, 1); 
+                    i--;
+                }
+            }
+            $hinput.val(JSON.stringify(hiddenFIDs));
+            getUploadedFiles();
+        }
+    });
+}
+function getUploadedFiles(){
+    $(".uploaded_files ol").empty();
+    var hinput = $("input[name=hidden_file]").val();
+    $.ajax({
+        dataType: 'json',
+        url : "{{ url(config('laraadmin.adminRoute') . '/uploaded_files_byid') }}",
+        type: 'POST',
+        data : {'_token': '{{ csrf_token() }}', 'hinput' : hinput},
+        success: function ( json ) {
+            var uploadedFiles = json.uploads;
+            for (var index = 0; index < uploadedFiles.length; index++) {
+                var upload = uploadedFiles[index];
+                getUploadedFile(upload);
+            }
+        }
+    });
+}
 
 </script>
 @endpush

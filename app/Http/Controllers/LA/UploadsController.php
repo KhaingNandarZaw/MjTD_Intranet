@@ -302,6 +302,13 @@ class UploadsController extends Controller
 		}
     }
 
+	public function uploaded_files_byid(Request $request){
+		$hinput = $request['hinput'];
+		$uploaded_lists = json_decode($hinput);
+		$uploads = DB::table('uploads')->whereIn("id", $uploaded_lists)->whereNull('deleted_at')->get();
+		
+		return response()->json(['uploads' => $uploads]);
+	}
     /**
      * Update Uploads Caption
      *
