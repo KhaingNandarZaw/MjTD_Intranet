@@ -169,7 +169,7 @@
                     Task Checking
                     <?php
                         $child_lists = \Session::get('child_user_lists');
-                        $task_count = DB::table('all_tasks')->whereIn('pic_userid', $child_lists)->where('status', '=', 'Done')->count();
+                        $task_count = DB::table('all_tasks')->whereIn('pic_userid', $child_lists)->where('report_to_userid', Auth::user()->id)->where('status', '=', 'Done')->count();
                     ?>
                     @if($task_count > 0)
                     <span class="pull-right-container">
@@ -183,7 +183,9 @@
             @endif
 
             @if(Entrust::hasRole("DGM"))
-                
+                <li>
+                    <a href="{{ url(config('laraadmin.adminRoute') . '/tasks') }}"><i class='fa fa-pencil-square-o'></i>Task Assignment</a>
+                <li>
                 <li><a href="{{ url(config('laraadmin.adminRoute') . '/task_checking') }}"><i class='fa fa-check-square-o'></i>
                     Task Checking
                     <?php
@@ -203,6 +205,7 @@
            
             @if(Entrust::hasRole("SUPER_ADMIN"))
             <!-- <li><a href="{{ url(config('laraadmin.adminRoute')). '/sopexcel', 'SopExcelController@index' }}"><i class='fa fa-download'></i> <span>Import SOP Excel File</span></a></li> -->
+            <li><a href="{{ route('log-viewer::dashboard') }}"><i class="fa fa-archive"></i> Logs</a></li>
             @endif
             
             @if(!Entrust::hasRole("EMPLOYEE"))

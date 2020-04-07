@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Dwij\Laraadmin\Helpers\LAHelper;
+use Auth;
 
 class SentToOfficer extends Mailable
 {
@@ -14,6 +15,8 @@ class SentToOfficer extends Mailable
 
     public $mail;
     public $task_title;
+    public $task_date;
+    public $task_remark;
     public $pic;
     public $reportTo;
     public $files;
@@ -25,9 +28,11 @@ class SentToOfficer extends Mailable
      *
      * @return void
      */
-    public function __construct($task_title, $pic, $reportTo, $files, $cc_array, $subject)
+    public function __construct($task_title, $task_date, $task_remark, $pic, $reportTo, $files, $cc_array, $subject)
     {
         $this->task_title = $task_title;
+        $this->task_date = $task_date;
+        $this->task_remark = $task_remark;
         $this->pic = $pic;
         $this->reportTo = $reportTo;
         $this->files = $files;
@@ -43,6 +48,8 @@ class SentToOfficer extends Mailable
     public function build()
     {
         $task_title = $this->task_title;
+        $task_date = $this->task_date;
+        $task_remark = $this->task_remark;
         $pic = $this->pic;
         $reportTo = $this->reportTo;
         $files = $this->files;
@@ -50,7 +57,7 @@ class SentToOfficer extends Mailable
         $cc_array = $this->cc_array;
 
         $email = $this->view('la.mail.sentToOfficer')
-                    ->with([ 'task_title' => $task_title, 'pic' => $pic, 'reportTo' => $reportTo]);
+                    ->with([ 'task_title' => $task_title, 'task_date' => $task_date, 'task_remark' => $task_remark, 'pic' => $pic, 'reportTo' => $reportTo]);
 
         if($files != null){
             foreach($files as $item){
@@ -65,6 +72,6 @@ class SentToOfficer extends Mailable
         if(isset($cc_array))
             $email->cc($cc_array);
             
-        return $email->subject($subject);
+        return $email->from(Auth::user()->email, Auth::user()->name)->subject($subject)->replyTo(Auth::user()->email, Auth::user()->name);
     }
 }

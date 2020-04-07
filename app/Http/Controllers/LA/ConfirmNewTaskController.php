@@ -89,7 +89,7 @@ class ConfirmNewTaskController extends Controller
     }
 
     public function reject(Request $request){
-        $today = date('Y-m-d h:i:s');
+        $today = date('Y-m-d H:i:s');
         $id = $request->input('task_id');
         $remark = $request->input('remark');
         
@@ -99,7 +99,7 @@ class ConfirmNewTaskController extends Controller
     }
     
     public function confirm(Request $request){
-        $today = date('Y-m-d h:i:s');
+        $today = date('Y-m-d H:i:s');
         $id = $request->input('task_id');
         $remark = $request->input('remark');
         
@@ -111,9 +111,9 @@ class ConfirmNewTaskController extends Controller
         $subject = "New Task Approved by " . Auth::user()->name;
         $to = $user->email;
         $task_title = $create_new_task->name;
-        $pic_user = DB::table('users')->where('id', $create_new_task->pic_user_id)->first();
-        $pic = $pic_user->name;
-        $reportTo = $user->name;
+        $report_to_user = DB::table('users')->where('id', $create_new_task->confirmed_by)->first();
+        $pic = $user->name;
+        $reportTo = $report_to_user->name;
 
         Mail::to($to)->send(new ConfirmNewTask($task_title, $pic, $reportTo, $subject));
 
@@ -161,7 +161,8 @@ class ConfirmNewTaskController extends Controller
                     "created_by" => $create_new_task->pic_user_id,
                     "report_to_userid" => $create_new_task->report_to_userid,
                     "pic_userid" => $create_new_task->pic_user_id,
-                    "remark" => $create_new_task->remark
+                    "remark" => $create_new_task->remark,
+                    "attachments" => $create_new_task->attachments
                 ]);
 
                 // $insert = DB::table('task_pics')->insertGetId([

@@ -213,7 +213,7 @@ class Create_New_TasksController extends Controller
         }
     }
     public function cancel($id){
-        $today = date('Y-m-d h:i:s');
+        $today = date('Y-m-d H:i:s');
         
         DB:: table('create_new_tasks')->where('id', $id)->update(['status' => 'Cancel']);
 

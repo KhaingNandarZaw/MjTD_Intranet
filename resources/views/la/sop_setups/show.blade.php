@@ -345,7 +345,7 @@ $(function(){
         "oSearch" : { "bSmart" : true },
         "order": [[ groupColumn, 'desc' ]],
         "displayLength": 25,
-        {{-- "drawCallback": function ( settings ) {
+        "drawCallback": function ( settings ) {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last=null;
@@ -353,7 +353,7 @@ $(function(){
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group && group != null && group != '') {
                     $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="8">'+group+'</td></tr>'
+                        '<tr class="group"><td colspan="9">'+group+'</td></tr>'
                     );
  
                     last = group;
@@ -361,13 +361,13 @@ $(function(){
                 if(group == null || group == ''){
                     group = 'Other';
                     $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="8">'+group+'</td></tr>'
+                        '<tr class="group"><td colspan="9">'+group+'</td></tr>'
                     );
  
                     last = group;
                 }
             } );
-        }, --}}
+        },
         stateSave: true
     });
     $("#files_table").DataTable({

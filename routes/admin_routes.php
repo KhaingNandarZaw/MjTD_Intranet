@@ -3,7 +3,7 @@
 use Dwij\Laraadmin\Helpers\LAHelper;
 
 /* ================== Homepage ================== */
-Route::get('/', 'HomeController@index');
+Route::get('/admin', 'HomeController@index');
 Route::auth();
 
 /* ================== Access Uploaded Files ================== */
@@ -162,4 +162,8 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_PANEL']], 
 	Route::match(['get', 'post'], config('laraadmin.adminRoute') . '/reports/evaluation_report', 'LA\ReportController@evaluation_report');
 	Route::match(['get', 'post'], config('laraadmin.adminRoute') . '/reports/detail_evaluation_report', 'LA\ReportController@detail_evaluation_report');
 
+
+    /* ================== System_Permissions ================== */
+    Route::resource(config('laraadmin.adminRoute') . '/system_permissions', 'LA\System_PermissionsController');
+    Route::get(config('laraadmin.adminRoute') . '/system_permission_dt_ajax', 'LA\System_PermissionsController@dtajax');
 });

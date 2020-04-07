@@ -94,7 +94,7 @@ class TasksController extends Controller
         if(Module::hasAccess("Tasks", "create")) {
             
             $rules = Module::validateRules("Tasks", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $validator = Validator::make($request->all(), $rules);
             
@@ -241,7 +241,7 @@ class TasksController extends Controller
         if(Module::hasAccess("Tasks", "edit")) {
             
             $rules = Module::validateRules("Tasks", $request, true);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $validator = Validator::make($request->all(), $rules);
             
@@ -285,7 +285,7 @@ class TasksController extends Controller
     public function destroy($id)
     {
         if(Module::hasAccess("Tasks", "delete")) {
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
             Task::find($id)->update(['deleted_at' => $today]);
             DB:: table('task_pics')->where('task_id', $id)->update(['deleted_at' => $today]);
             DB:: table('task_instances')->where('task_id', $id)->where('status', '=', 'On Progress')->update(['deleted_at' => $today]);

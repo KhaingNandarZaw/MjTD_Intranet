@@ -68,7 +68,8 @@ return [
             'strict' => false,
             'engine' => null,
             'options'   => array(
-                PDO::ATTR_EMULATE_PREPARES => true
+                PDO::ATTR_EMULATE_PREPARES => true,
+                'sticky' => true
             ),
         ],
 

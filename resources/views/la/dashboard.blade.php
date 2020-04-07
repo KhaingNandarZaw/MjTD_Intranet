@@ -11,6 +11,7 @@
 
   $current_month = $date->format('F'); // July
 ?>
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
 <section class="content">
     <div class="row">
       <div class="col-md-6 col-lg-2 col-xlg-3">
@@ -42,7 +43,15 @@
             <i class="ion ion-bag"></i>
           </div>
           <div class="inner">
-            <h3><a href="https://admin.umsmjtd.com/" target="_blank" style="color:white;"> Utility Management System</a></h3>
+            <h3>
+              @if(isset($system_permission) && $system_permission->ums)
+                <a href="{{ LAConfigs::getByKey('ums_url') }}/doLogin?token={{Auth::user()->ums_token}}" target="_blank" style="color:white;"> 
+                  Utility Management System
+                </a>
+              @else
+                Utility Management System
+              @endif
+            </h3>
           </div>
         </div>
       </div><!-- ./col -->
@@ -74,7 +83,15 @@
             <i class="ion ion-calendar"></i>
           </div>
           <div class="inner">
-            <h3>Resource Booking System</h3>
+            @if(isset($system_permission) && $system_permission->rbs)
+              <h3>
+                <a href="{{ LAConfigs::getByKey('rbs_url') }}/doLogin?token={{Auth::user()->rbs_token}}" target="_blank" style="color:white;">
+                  Resource Booking System
+                </a>  
+              </h3>
+              @else
+                <h3>Resource Booking System</h3>
+              @endif
           </div>
         </div>
       </div><!-- ./col -->
@@ -84,9 +101,8 @@
         <div class="box box-danger" style="height: 270px;overflow: auto;">
           <div class="box-header with-border">
             <h3 class="box-title">Today Leaves</h3>
-
             <div class="box-tools pull-right">
-              <span class="label label-danger">7 Members</span>
+              <span class="label label-danger">{{count($leave_ppl_lists)}} Members</span>
               <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
               </button>
               <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
@@ -96,139 +112,17 @@
           <!-- /.box-header -->
           <div class="box-body no-padding">
             <ul class="users-list clearfix">
+            @foreach($leave_ppl_lists as $leave_ppl)
               <li>
-                <img src="{{asset('la-assets/img/user1-128x128.jpg')}}" style="width:50%;height:50%;" alt="User Image">
-                <a class="users-list-name" href="#">Mg Aung</a>
+                <img src="{{ Gravatar::fallback(asset('la-assets/img/user2-160x160.jpg'))->get(Auth::user()->email) }}" style="width:50%;height:50%;" alt="User Image">
+                <a class="users-list-name" href="#">{{$leave_ppl['FullName']}}</a>
               </li>
-              <li>
-                <img src="{{asset('la-assets/img/user8-128x128.jpg')}}" style="width:50%;height:50%;"  alt="User Image">
-                <a class="users-list-name" href="#">Mg Mg</a>
-              </li>
-              <li>
-                <img src="{{asset('la-assets/img/user7-128x128.jpg')}}" style="width:50%;height:50%;"  alt="User Image">
-                <a class="users-list-name" href="#">Khine Zin</a>
-              </li>
-              <li>
-                <img src="{{asset('la-assets/img/user6-128x128.jpg')}}" style="width:50%;height:50%;"  alt="User Image">
-                <a class="users-list-name" href="#">Aye Min</a>
-              </li>
-              <li>
-                <img src="{{asset('la-assets/img/user5-128x128.jpg')}}" style="width:50%;height:50%;"  alt="User Image">
-                <a class="users-list-name" href="#">Su Su</a>
-              </li>
-              <li>
-                <img src="{{asset('la-assets/img/user4-128x128.jpg')}}" style="width:50%;height:50%;"  alt="User Image">
-                <a class="users-list-name" href="#">Thandar</a>
-              </li>
-              <li>
-                <img src="{{asset('la-assets/img/user3-128x128.jpg')}}" style="width:50%;height:50%;"  alt="User Image">
-                <a class="users-list-name" href="#">Phyo Nandar</a>
-              </li>
+            @endforeach
             </ul>
             <!-- /.users-list -->
           </div>
           <!-- /.box-footer -->
         </div>
-      </div>
-      <div class="col-md-6 col-lg-4" style="display: none;">
-        <!-- TO DO List -->
-        <div class="box box-primary">
-          <div class="box-header">
-            <i class="ion ion-clipboard"></i>
-            <h3 class="box-title">To Do List</h3>
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-            </button>
-          </div><!-- /.box-header -->
-          <div class="box-body">
-            <ul class="todo-list">
-              <li>
-                <!-- drag handle -->
-                <span class="handle">
-                  <i class="fa fa-ellipsis-v"></i>
-                  <i class="fa fa-ellipsis-v"></i>
-                </span>
-                <!-- checkbox -->
-                <input type="checkbox" value="" name="">
-                <!-- todo text -->
-                <span class="text">Design a nice theme</span>
-                <!-- Emphasis label -->
-                <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-                <!-- General tools such as edit or delete-->
-                <div class="tools">
-                  <i class="fa fa-edit"></i>
-                  <i class="fa fa-trash-o"></i>
-                </div>
-              </li>
-              <li>
-                <span class="handle">
-                  <i class="fa fa-ellipsis-v"></i>
-                  <i class="fa fa-ellipsis-v"></i>
-                </span>
-                <input type="checkbox" value="" name="">
-                <span class="text">Make the theme responsive</span>
-                <small class="label label-info"><i class="fa fa-clock-o"></i> 4 hours</small>
-                <div class="tools">
-                  <i class="fa fa-edit"></i>
-                  <i class="fa fa-trash-o"></i>
-                </div>
-              </li>
-              <li>
-                <span class="handle">
-                  <i class="fa fa-ellipsis-v"></i>
-                  <i class="fa fa-ellipsis-v"></i>
-                </span>
-                <input type="checkbox" value="" name="">
-                <span class="text">Let theme shine like a star</span>
-                <small class="label label-warning"><i class="fa fa-clock-o"></i> 1 day</small>
-                <div class="tools">
-                  <i class="fa fa-edit"></i>
-                  <i class="fa fa-trash-o"></i>
-                </div>
-              </li>
-              <li>
-                <span class="handle">
-                  <i class="fa fa-ellipsis-v"></i>
-                  <i class="fa fa-ellipsis-v"></i>
-                </span>
-                <input type="checkbox" value="" name="">
-                <span class="text">Let theme shine like a star</span>
-                <small class="label label-success"><i class="fa fa-clock-o"></i> 3 days</small>
-                <div class="tools">
-                  <i class="fa fa-edit"></i>
-                  <i class="fa fa-trash-o"></i>
-                </div>
-              </li>
-              <li>
-                <span class="handle">
-                  <i class="fa fa-ellipsis-v"></i>
-                  <i class="fa fa-ellipsis-v"></i>
-                </span>
-                <input type="checkbox" value="" name="">
-                <span class="text">Check your messages and notifications</span>
-                <small class="label label-primary"><i class="fa fa-clock-o"></i> 1 week</small>
-                <div class="tools">
-                  <i class="fa fa-edit"></i>
-                  <i class="fa fa-trash-o"></i>
-                </div>
-              </li>
-              <li>
-                <span class="handle">
-                  <i class="fa fa-ellipsis-v"></i>
-                  <i class="fa fa-ellipsis-v"></i>
-                </span>
-                <input type="checkbox" value="" name="">
-                <span class="text">Let theme shine like a star</span>
-                <small class="label label-default"><i class="fa fa-clock-o"></i> 1 month</small>
-                <div class="tools">
-                  <i class="fa fa-edit"></i>
-                  <i class="fa fa-trash-o"></i>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div><!-- /.box -->
       </div>
       @if(count($announcements) > 0)
       <div class="col-md-6 col-lg-4">
@@ -398,13 +292,14 @@
                 <select class="form-control input-sm" data-placeholder="Select User" onchange="filter_user(this.value)" rel="select2" name="user_id">
                     <option value="0" selected>*</option>
                     @foreach($users as $user)
-                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
-                      
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
               </div>
             </div>
-            <div id="all_calendar"></div>
+            <div id="all_calendar_div">
+              <div id="all_calendar"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -693,7 +588,9 @@
 })(window.jQuery);
 
 function filter_user(emp_id){
-  
+  $('#all_calendar_div').html('<div id="all_calendar"></div>');
+
+
   $('#all_calendar').fullCalendar({
     left:   'title',
     header: {
@@ -731,5 +628,6 @@ function filter_user(emp_id){
     }
   });
 }
+
 </script>
 @endpush

@@ -94,12 +94,12 @@ class UsersController extends Controller
             // $password = LAHelper::gen_password();
             // $hash = bcrypt($password);
             
-            // $update = DB::table("users")
-            //         ->where('id', $insert_id)
-            //         ->update([
-            //             'password' => $hash,
-            //             'confirm_password' => $hash
-            //         ]);
+            $update = DB::table("users")
+                    ->where('id', $insert_id)
+                    ->update([
+                        'password' => $hash
+                        // 'confirm_password' => $hash
+                    ]);
             $username = $request->username;
             $mail = $request->email;
             $address = $mail;
@@ -227,7 +227,9 @@ class UsersController extends Controller
     public function destroy($id)
     {
         if(Module::hasAccess("Users", "delete")) {
-            User::find($id)->delete();
+            // User::find($id)->delete();
+            $today = date('Y-m-d H:i:s');
+            DB:: table('users')->where('id', $id)->update(['deleted_at' => $today]);
             
             // Redirecting to index() method
             return redirect()->route(config('laraadmin.adminRoute') . '.users.index');

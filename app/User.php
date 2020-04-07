@@ -9,6 +9,7 @@
 
 namespace App;
 
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -19,9 +20,10 @@ use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 
+
 class User extends Authenticatable implements AuthorizableContract, CanResetPasswordContract
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
     use CanResetPassword;
     // use SoftDeletes;
     use EntrustUserTrait;
@@ -43,7 +45,7 @@ class User extends Authenticatable implements AuthorizableContract, CanResetPass
      * @var array
      */
 	protected $hidden = [
-		'password', 'remember_token',
+		'password', 'remember_token'
     ];
     
     // protected $dates = ['deleted_at'];

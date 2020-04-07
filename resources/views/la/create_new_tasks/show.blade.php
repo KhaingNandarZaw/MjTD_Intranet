@@ -96,7 +96,39 @@
                             <label class="col-md-4 col-sm-6 col-xs-6">Status :</label>
                             <div class="col-md-8 col-sm-6 col-xs-6">{{ $create_new_task->status }}</div>
                         </div>
-                        
+                        <div class="form-group">
+                            <label class="col-md-4 col-sm-6 col-xs-6">Remark :</label>
+                            <div class="col-md-8 col-sm-6 col-xs-6">{{ $create_new_task->remark }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 col-sm-6 col-xs-6">Attachments :</label>
+                            <div class="col-md-8 col-sm-6 col-xs-6">
+                                <?php
+                                $value = $create_new_task->attachments;
+                                if($value != "" && $value != "[]" && $value != "null" && starts_with($value, "[")) {
+                                    $uploads = json_decode($value);
+                                    $uploads_html = "";
+                                    
+                                    foreach($uploads as $uploadId) {
+                                        $upload = DB::table('task_attachments')->whereNull('deleted_at')->where('id', $uploadId)->first();;
+                                        if(isset($upload->id)) {
+                                            $uploadIds[] = $upload->id;
+                                            $fileImage = "";
+                                            
+                                                $fileImage = "<i class='fa fa-file-o'></i> " . $upload->filename;
+                                            
+                                            $uploads_html .= '<a class="preview" target="_blank" href="' . url("task_attachments/" . $upload->hash . DIRECTORY_SEPARATOR . $upload->filename) . '" data-toggle="tooltip" data-placement="top" data-container="body" style="display:inline-block;margin-right:5px;" title="' . $upload->filename . '">
+                                                    ' . $fileImage . '</a><br/>';
+                                        }
+                                    }
+                                    $value = $uploads_html;
+                                } else {
+                                    $value = 'No files found.';
+                                }
+                                echo $value;
+                                ?>
+                            </div>
+                        </div>
                         @if(isset($create_new_task->confirmed_by))
                             <div class="form-group">
                                 <label class="col-md-4 col-sm-6 col-xs-6">Confirmed By :</label>
@@ -125,10 +157,6 @@
                             <div class="col-md-8 col-sm-6 col-xs-6">{{ $value }}</div>
                         </div>
                         @endif
-                        <div class="form-group">
-                            <label class="col-md-4 col-sm-6 col-xs-6">Remark :</label>
-                            <div class="col-md-8 col-sm-6 col-xs-6">{{ $create_new_task->remark }}</div>
-                        </div>
                     </div>
                 </div>
             </div>

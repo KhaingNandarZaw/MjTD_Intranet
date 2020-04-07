@@ -93,32 +93,31 @@ $(function () {
         }
     });
 });
-    function getUploadedFile(upload) {
-        $hinput = $("input[name=hidden_file]");
-        
-        var hiddenFIDs = JSON.parse($hinput.val());
-        // check if upload_id exists in array
-        var upload_id_exists = false;
-        for (var key in hiddenFIDs) {
-            if (hiddenFIDs.hasOwnProperty(key)) {
-                var element = hiddenFIDs[key];
-                if(element == upload.id) {
-                    upload_id_exists = true;
-                }
+
+function getUploadedFile(upload) {
+    $hinput = $("input[name=hidden_file]");
+    
+    var hiddenFIDs = JSON.parse($hinput.val());
+    // check if upload_id exists in array
+    var upload_id_exists = false;
+    for (var key in hiddenFIDs) {
+        if (hiddenFIDs.hasOwnProperty(key)) {
+            var element = hiddenFIDs[key];
+            if(element == upload.id) {
+                upload_id_exists = true;
             }
         }
-        if(!upload_id_exists) {
-            hiddenFIDs.push(upload.id);
-        }
-        $hinput.val(JSON.stringify(hiddenFIDs));
-        var fileImage = upload.name;
-        $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/files/"+upload.hash+"/"+upload.name+"'>"+fileImage+"</a><a href='#' onclick='deleteManualFile("+upload.id+")' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
     }
+    if(!upload_id_exists) {
+        hiddenFIDs.push(upload.id);
+    }
+    $hinput.val(JSON.stringify(hiddenFIDs));
+    var fileImage = upload.name;
+    $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/files/"+upload.hash+"/"+upload.name+"'>"+fileImage+"</a><a href='#' onclick='deleteManualFile("+upload.id+")' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
+}
 
-    function deleteManualFile(id){
-    alert(id);
+function deleteManualFile(id){
     $.ajax({
-        
         dataType: 'json',
         url : "{{ url(config('laraadmin.adminRoute') . '/uploads_delete_file') }}",
         type: 'POST',

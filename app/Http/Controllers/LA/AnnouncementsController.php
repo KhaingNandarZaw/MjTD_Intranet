@@ -87,16 +87,20 @@ class AnnouncementsController extends Controller
             $insert_id = Module::insert("Announcements", $request);
 
             $subject = "New announcement created by " . Auth::user()->name;
-            $to = $request->email;
-            $users_temp = explode(',', $to);
-            $users = [];
-            foreach($users_temp as $key => $ut){
-            $users[$key] = $ut;
-            }
-            $task_title = $request->title;
-            $description = $request->description;
+            
+            if(isset($request->email)){
+                $to = $request->email;
+                $users_temp = explode(',', $to);
+                $users = [];
+                foreach($users_temp as $key => $ut){
+                    $users[$key] = $ut;
+                }
+                $task_title = $request->title;
+                $description = $request->description;
 
-            Mail::to($users)->send(new AnnouncementsMail($task_title, $description, $subject));
+                Mail::to($users)->send(new AnnouncementsMail($task_title, $description, $subject));
+                
+            }
             
             return redirect()->route(config('laraadmin.adminRoute') . '.announcements.index');
             

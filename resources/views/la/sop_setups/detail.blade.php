@@ -33,6 +33,10 @@
                             <label class="col-md-4 col-sm-6 col-xs-6">Time Frame :</label>
                             <div class="col-md-8 col-sm-6 col-xs-6">{{$time_frame->name}}</div>
                         </div>
+                        <div class="form-group" id="start_date" style="display: none;">
+                            <label class="col-md-4 col-sm-6 col-xs-6">Due At :</label>
+                            <div class="col-md-8 col-sm-6 col-xs-6">{{$sop_setup->start_date}}</div>
+                        </div>
                         @la_display($module, 'pic_userid')
                         @la_display($module, 'report_to_userid')
                         <div class="form-group" id="every_interval" style="display: none;">
@@ -88,7 +92,7 @@ $(function(){
     var time_frame = "<?php echo $time_frame->name ?>"; 
     var radioValue = "<?php echo $sop_setup->monthly_type ?>";
     
-    $("#due_date").css('display', 'none');
+    $("#start_date").css('display', 'none');
     $("#day_of_week").css('display', 'none');
     $("#every_interval").css('display', 'none');
     $("#startDate").css('display', 'none');
@@ -99,7 +103,7 @@ $(function(){
     $("#monthly_day_of_week").css('display', 'none');
     
     if(time_frame == 'Once'){
-        $("#due_date").css('display', 'block');
+        $("#start_date").css('display', 'block');
     } else if(time_frame == 'Daily'){
         $("#every_interval").css('display', 'block');
         $("#startDate").css('display', 'block');

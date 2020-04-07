@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Dwij\Laraadmin\Helpers\LAHelper;
+use Auth;
 
 class ActionByOfficer extends Mailable
 {
@@ -50,6 +51,7 @@ class ActionByOfficer extends Mailable
         $old_pic_name = $this->old_pic_name;
 
         $email = $this->view('la.mail.actionByOfficer')
+                    ->from(Auth::user()->email, Auth::user()->name)
                     ->with([ 'task_title' => $task_title, 'pic' => $pic, 'action_by' => $action_by, 'old_pic_name' => $old_pic_name])
                     ->subject($subject);
 

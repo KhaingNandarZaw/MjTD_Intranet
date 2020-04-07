@@ -81,7 +81,7 @@
             </div>
         </div>
         {!! Form::close() !!}
-        <table id="example1" class="table table-bordered">
+        <table id="example1" class="table table-bordered table-striped table-hover">
         <thead>
         <tr>
             <th>No.</th>
@@ -92,11 +92,11 @@
             <th class="col-sm-1">Report To</th>
             @endif
             <th class="col-sm-1">To Finish Date</th>
-            <th class="col-sm-1">Finished Date</th>
+            <!-- <th class="col-sm-1">Finished Date</th> -->
             <th class="col-sm-1">Approved By</th>
             <th class="col-sm-1">Status</th>
             @if($show_actions)
-            <th>Actions</th>
+            <th class="col-sm-2">Actions</th>
             @endif
         </tr>
         </thead>
@@ -111,7 +111,7 @@
                 <td>{{ $task->reportTo }}</td>
                 @endif
                 <td>{{ $task->task_date }}</td>
-                <td>{{ $task->done_date }}</td>
+                <!-- <td>{{ $task->done_date }}</td> -->
                 <td>{{ $task->approvedBy }}</td>
                 <td><small class="label  {{ (($task->status=='On Progress') ? 'label-warning' : (($task->status=='Rejected') ? 'label-danger' : (($task->status == 'Approved') ? 'label-success' : (($task->status == 'Done') ? 'label-primary' : 'label-default')))) }}">{{ $task->status }}</small></td>
                 @if($show_actions)
@@ -123,7 +123,11 @@
                         <a class="btn btn-primary btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-pic="{{$task->pic}}" data-target="#ReAssignModal">Reassign PIC</a>
                         @endif
                     @endif
-                    @if($task->status == 'Done' && $task->report_to_userid = Auth::user()->id)
+                    @if(Entrust::hasRole("SUPER_ADMIN") && $task->status == 'Done')
+                    <a class="btn btn-success btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-target="#ApproveModal">Approve</a>
+                        <a class="btn btn-danger btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-target="#RejectModal">Reject</a>
+                    @endif
+                    @if((Entrust::hasRole("OFFICER") || Entrust::hasRole("CEO") || Entrust::hasRole("EMPLOYEE")) &&$task->status == 'Done' && $task->report_to_userid == Auth::user()->id)
                         <a class="btn btn-success btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-target="#ApproveModal">Approve</a>
                         <a class="btn btn-danger btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-target="#RejectModal">Reject</a>
                     @endif
@@ -196,13 +200,21 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 				<h4 class="modal-title" id="myModalLabel">Confirmation</h4>
             </div>
-            {!! Form::open(['action' => 'LA\Task_InstancesController@rejected_by_officer', 'files' => true]) !!}
+            {!! Form::open(['action' => 'LA\Task_InstancesController@rejected_by_officer', 'id' => 'task_instance-reject-form', 'files' => true]) !!}
 			<div class="modal-body">
                 <div class="box-body">
                     <input type="hidden" class="form-control input-sm" id="task_instance_id" name="task_instance_id">
+                    <div class="form-group">
+						<div class="input-group">
+						    <label>Attachment :</label>
+						  <div class="custom-file">
+						    <input type="file" multiple class="custom-file-input" id="complete_files" name="complete_files[]" aria-describedby="inputGroupFileAddon01">
+						  </div>
+						</div>
+					</div>
 					<div class="form-group">
-						<label for="name">Remark :</label>
-						<textarea class="form-control module_label_edit" placeholder="Remark" name="remark"></textarea>
+						<label for="name">Remark <span style="color:red;">*</span> :</label>
+						<textarea class="form-control module_label_edit" placeholder="Remark" required name="remark"></textarea>
 					</div>
 				</div>
 			</div>
@@ -326,6 +338,9 @@ $(function () {
     $("#task_instance-cancel-form").validate({
 
     });
+    $("#task_instance-reject-form").validate({
+
+});
     $("#task_instance-reassign-form").validate({
 
     });

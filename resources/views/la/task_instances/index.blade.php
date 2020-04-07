@@ -28,7 +28,7 @@
         {!! Form::open(['action' => 'LA\Task_InstancesController@my_tasks', 'method' => 'POST']) !!}
         <div class="form-group col-sm-12">
             <div class="col-sm-3 pull-right" style="margin-top: 25px;">
-            <a class="btn btn-success btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target="#ReportSOP"><i class="fa fa-check-square"></i> Report to Manager for unroutine work</a>
+            <a class="btn btn-success btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target="#ReportSOP"><i class="fa fa-check-square"></i> Report for unroutine work</a>
             </div>
             <div class="col-md-2">
                 <label>Status</label>
@@ -97,7 +97,7 @@
                 <td>{{ $task->reportTo }}</td>
                 <td><small class="label  {{ (($task->status=='On Progress') ? 'label-warning' : (($task->status=='Rejected') ? 'label-danger' : (($task->status == 'Approved') ? 'label-success' : (($task->status == 'Done') ? 'label-primary' : 'label-default')))) }}">{{ $task->status }}</small></td>
                 @if($show_actions)
-                <td>@if($task->status == 'On Progress' || $task->status == 'Rejected')<a class="btn btn-success btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-target="#CompleteModal"><i class="fa fa-check-square"></i> Report to Manager</a>@endif</td>
+                <td>@if($task->status == 'On Progress' || $task->status == 'Rejected')<a class="btn btn-success btn-xs" style="display:inline;padding:2px 5px 3px 5px;" data-toggle="modal" data-target-id="{{ $task->id }}" data-target="#CompleteModal"><i class="fa fa-check-square"></i> Report</a>@endif</td>
                 @endif
             </tr>
             @endforeach
@@ -129,6 +129,10 @@
                         </select>
                     </div>
 					<div class="form-group">
+						<label for="name">Remark :</label>
+						<textarea class="form-control module_label_edit" placeholder="Remark" name="remark"></textarea>
+					</div>
+					<div class="form-group">
 						<div class="input-group">
 						    <label>Attachment :</label>
 						  <div class="custom-file">
@@ -136,10 +140,21 @@
 						  </div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="name">Remark :</label>
-						<textarea class="form-control module_label_edit" placeholder="Remark" name="remark"></textarea>
-					</div>
+                    <div class="form-group">
+                        <label for="will_sent_outsiders">Will sent to Outsiders?<span style="color:red;"> *</span> :</label>
+                        <input type="checkbox" id="will_sent_outsiders" name="will_sent_outsiders" value="true"/>
+                    </div>
+                    <div class="form-group" id="cc_outsiders" style="display:none;">
+                        <label>Cc for outsiders( comma(,) separted for each email address) :<span style="color:red;"> *</span> :</label>
+                        <input type="text" class="form-control" name="cc_outsiders"/>
+                    </div>
+                    <div class="form-group" id="subject" style="display:none;">
+                        <label>Subject :<span style="color:red;"> *</span> :</label>
+                        <input type="text" class="form-control" name="subject"/>
+                    </div>
+                    <div class="form-group" id="contents" style="display:none;">
+                        <textarea id="summernote" name="contents"></textarea>
+                    </div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -156,7 +171,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h4 class="modal-title" id="myModalLabel">Report To Manager</h4>
+				<h4 class="modal-title" id="myModalLabel">Report</h4>
             </div>
             {!! Form::open(['action' => 'LA\Task_InstancesController@report_to_officer', 'files' => true]) !!}
 			<div class="modal-body">
@@ -181,6 +196,10 @@
                         </select>
                     </div>
 					<div class="form-group">
+						<label for="name">Remark :</label>
+						<textarea class="form-control module_label_edit" placeholder="Remark" name="remark"></textarea>
+					</div>
+					<div class="form-group">
 						<div class="input-group">
 						    <label>Attachment :</label>
 						  <div class="custom-file">
@@ -188,10 +207,21 @@
 						  </div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="name">Remark :</label>
-						<textarea class="form-control module_label_edit" placeholder="Remark" name="remark"></textarea>
-					</div>
+                    <div class="form-group">
+                        <label for="will_sent_outsiders">Will sent to Outsiders?<span style="color:red;"> *</span> :</label>
+                        <input type="checkbox" id="will_sent_outsiders" name="will_sent_outsiders" value="true"/>
+                    </div>
+                    <div class="form-group" id="cc_outsiders" style="display:none;">
+                        <label>Cc for outsiders( comma(,) separted for each email address) :<span style="color:red;"> *</span> :</label>
+                        <input type="text" class="form-control" name="cc_outsiders"/>
+                    </div>
+                    <div class="form-group" id="subject" style="display:none;">
+                        <label>Subject :<span style="color:red;"> *</span> :</label>
+                        <input type="text" class="form-control" name="subject"/>
+                    </div>
+                    <div class="form-group" id="contents" style="display:none;">
+                        <textarea id="summernote" name="contents"></textarea>
+                    </div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -207,12 +237,17 @@
 
 @push('styles')
 <link rel="stylesheet" type="text/css" href="{{ asset('la-assets/plugins/datatables/datatables.min.css') }}"/>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.css" rel="stylesheet">
 @endpush
 
 @push('scripts')
 <script src="{{ asset('la-assets/plugins/datatables/datatables.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.js"></script>
 <script>
 $(function () {
+    $('#CompleteModal #summernote').summernote('code');
+    $('#ReportSOP #summernote').summernote('code');
+
     $("#example1").DataTable({
         
     });
@@ -222,6 +257,28 @@ $(function () {
     $("#CompleteModal").on("show.bs.modal", function (e) {
         var id = $(e.relatedTarget).data('target-id');
         $('#task_instance_id').val(id);
+    });
+
+    $('#CompleteModal #will_sent_outsiders:checkbox').bind('change', function(e) {
+        $("#CompleteModal #cc_outsiders").css('display', 'none');
+        $("#CompleteModal #subject").css('display', 'none');
+        $("#CompleteModal #contents").css('display', 'none');
+        if ($(this).is(':checked')) {
+            $("#CompleteModal #cc_outsiders").css('display', 'block');
+            $("#CompleteModal #subject").css('display', 'block');
+            $("#CompleteModal #contents").css('display', 'block');
+        }
+    });
+
+    $('#ReportSOP #will_sent_outsiders:checkbox').bind('change', function(e) {
+        $("#ReportSOP #cc_outsiders").css('display', 'none');
+        $("#ReportSOP #subject").css('display', 'none');
+        $("#ReportSOP #contents").css('display', 'none');
+        if ($(this).is(':checked')) {
+            $("#ReportSOP #cc_outsiders").css('display', 'block');
+            $("#ReportSOP #subject").css('display', 'block');
+            $("#ReportSOP #contents").css('display', 'block');
+        }
     });
 });
 </script>

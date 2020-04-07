@@ -38,7 +38,7 @@ class CreateAnnouncementsTable extends Migration
                 "unique" => false,
                 "defaultvalue" => "",
                 "minlength" => 0,
-                "maxlength" => 0,
+                "maxlength" => 1000,
                 "required" => false,
                 "listing_col" => true
             ], [
@@ -60,7 +60,7 @@ class CreateAnnouncementsTable extends Migration
                 "minlength" => 0,
                 "maxlength" => 0,
                 "required" => true,
-                "listing_col" => false
+                "listing_col" => true
             ], [
                 "colname" => "enddate",
                 "label" => "End Date",
@@ -70,7 +70,7 @@ class CreateAnnouncementsTable extends Migration
                 "minlength" => 0,
                 "maxlength" => 0,
                 "required" => true,
-                "listing_col" => false
+                "listing_col" => true
             ], [
                 "colname" => "hidden_file",
                 "label" => "File",
@@ -79,6 +79,26 @@ class CreateAnnouncementsTable extends Migration
                 "defaultvalue" => "",
                 "minlength" => 0,
                 "maxlength" => 0,
+                "required" => false,
+                "listing_col" => false
+            ], [
+                "colname" => "is_sent",
+                "label" => "Will sent email?",
+                "field_type" => "Checkbox",
+                "unique" => false,
+                "defaultvalue" => "0",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => true,
+                "listing_col" => false
+            ], [
+                "colname" => "email",
+                "label" => "Email Addresses",
+                "field_type" => "TextField",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 250,
                 "required" => false,
                 "listing_col" => false
             ]

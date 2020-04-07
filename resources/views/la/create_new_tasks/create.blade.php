@@ -117,6 +117,21 @@
                 @la_input($module, 'termination_date')
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-4">
+                @la_input($module, 'remark')
+            </div>
+            <div class="form-group col-sm-6">
+                <input class="form-control input-sm" placeholder="Enter File" data-rule-minlength="0" data-rule-maxlength="0" required="1" name="attachments" type="hidden" value="[]" aria-required="true">
+                <div id="fm_dropzone_main" name="file">
+                    <a id="closeDZ1"><i class="fa fa-times"></i></a>
+                    <div class="dz-message"><i class="fa fa-cloud-upload"></i><br>Drop files here to attach</div>
+                </div>
+                <div class="uploaded_files">
+                    <ol class="list-group"></ol>
+                </div>
+            </div>
+        </div>
         <div class="col-md-8 col-md-offset-5">
             <div class="form-group">
                 {!! Form::submit( 'Create', ['class'=>'btn btn-sm btn-primary']) !!} 
@@ -144,7 +159,89 @@ $(function () {
     $("input[name=monthly_type]").on('change', function(){
         timeFrameChanged();
     });
+
+    new Dropzone("#fm_dropzone_main", {
+        maxFiles : 10,
+        maxFilesize: 500,
+        url: "{{action('LA\UploadsController@upload_task_files')}}",
+        type : 'POST',
+        params: {
+            _token: "{{csrf_token()}}"
+        },
+        init: function() {
+            this.on("complete", function(file) {
+                this.removeFile(file);
+                this.processQueue();
+            });
+            this.on("error", function(file, response) {
+                console.log(response);
+            });
+        },
+        success: function(file, response){
+            loadUploadedFile(response.upload);
+        }
+    });
 });
+function loadUploadedFile(upload) {
+    $hinput = $("input[name=attachments]");
+    
+    var hiddenFIDs = JSON.parse($hinput.val());
+    // check if upload_id exists in array
+    var upload_id_exists = false;
+    for (var key in hiddenFIDs) {
+        if (hiddenFIDs.hasOwnProperty(key)) {
+            var element = hiddenFIDs[key];
+            if(element == upload.id) {
+                upload_id_exists = true;
+            }
+        }
+    }
+    if(!upload_id_exists) {
+        hiddenFIDs.push(upload.id);
+    }
+    $hinput.val(JSON.stringify(hiddenFIDs));
+    var fileImage = upload.filename;
+    $(".uploaded_files ol").append("<li class='list-group-item'><a upload_id='"+upload.id+"' target='_blank' href='"+bsurl+"/task_attachments/"+upload.hash+"/"+upload.filename+"'>"+fileImage+"</a><a href='#' onclick='delete_task_attachment(" + upload.id + ")' class='btn btn-xs btn-danger pull-right'><i class='fa fa-trash'></i></a></li>"); 
+}
+function getUploadedFiles(){
+    $(".uploaded_files ol").empty();
+    var hinput = $("input[name=attachments]").val();
+    $.ajax({
+        dataType: 'json',
+        url : "{{ url(config('laraadmin.adminRoute') . '/uploaded_task_attachments') }}",
+        type: 'POST',
+        data : {'_token': '{{ csrf_token() }}', 'hinput' : hinput},
+        success: function ( json ) {
+            var uploadedFiles = json.uploads;
+            for (var index = 0; index < uploadedFiles.length; index++) {
+                var upload = uploadedFiles[index];
+                loadUploadedFile(upload);
+            }
+        }
+    });
+}
+function delete_task_attachment(upload_id){
+    $hinput = $("input[name=attachments]");
+    
+    var hiddenFIDs = JSON.parse($hinput.val());
+    for( var i = 0; i < hiddenFIDs.length; i++){ 
+        if ( hiddenFIDs[i] == upload_id) {
+            hiddenFIDs.splice(i, 1); 
+            i--;
+        }
+    }
+    $hinput.val(JSON.stringify(hiddenFIDs));
+    
+    $.ajax({
+        dataType: 'json',
+        url : "{{ url(config('laraadmin.adminRoute') . '/delete_task_attachment') }}",
+        type: 'POST',
+        data : {'_token': '{{ csrf_token() }}', 'file_id' : upload_id},
+        success: function ( json ) {
+            getUploadedFiles();
+        }
+    });
+}
 function timeFrameChanged(){
     $("#due_date").css('display', 'none');
     $("#day_of_week").css('display', 'none');

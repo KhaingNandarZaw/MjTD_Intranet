@@ -18,6 +18,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Models\Announcement;
 use Zizaco\Entrust\EntrustFacade as Entrust;
+use GuzzleHttp\Client;
+
 /**
  * Class DashboardController
  * @package App\Http\Controllers
@@ -67,6 +69,7 @@ class DashboardController extends Controller
 
         $date = Carbon::now();
         $current_user_id = Auth::user()->id;
+        $system_permission = DB::table('system_permissions')->where('user_id', $current_user_id)->first();
 
         $startOfYear = $date->copy()->startOfYear()->toDateString();
         $endOfYear   = $date->copy()->endOfYear()->toDateString();
@@ -166,6 +169,15 @@ class DashboardController extends Controller
         // get announcements data for announcement section
         $announcements = Announcement::whereDate('startdate', '<=', $today)->whereDate('enddate',   '>=', $today)->whereNull('deleted_at')->get();
 
+        try{
+            $client = new Client();
+            $response = $client->request('GET', 'https://cloud.acedatasystems.com:8028/api/smarthr/gettodayleaves');
+            $statusCode = $response->getStatusCode();
+            $leave_ppl_lists = json_decode($response->getBody()->getContents(), true);
+        }catch(Exception $e){
+            $leave_ppl_lists = [];
+        }
+
         return view('la.dashboard',[
             'total_tasks' => $total_tasks,
             'announcements' => $announcements,
@@ -183,7 +195,9 @@ class DashboardController extends Controller
             'complete_percentage_lists' => $complete_percentage_lists,
             'user_name_lists' => $user_name_lists,
             'on_progress_overdue' => $on_progress_overdue,
-            'users' => $users
+            'users' => $users,
+            'leave_ppl_lists' => $leave_ppl_lists,
+            'system_permission' => $system_permission
         ]);
     }
 }

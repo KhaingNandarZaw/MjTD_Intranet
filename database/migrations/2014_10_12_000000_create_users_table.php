@@ -134,6 +134,26 @@ class CreateUsersTable extends Migration
                 "required" => false,
                 "listing_col" => false,
                 "popup_vals" => ["Active","Inactive"],
+            ], [
+                "colname" => "ums_token",
+                "label" => "UMS Token",
+                "field_type" => "TextField",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 256,
+                "required" => false,
+                "listing_col" => false
+            ], [
+                "colname" => "rbs_token",
+                "label" => "RBS Token",
+                "field_type" => "TextField",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 256,
+                "required" => false,
+                "listing_col" => false
             ]
         ]);
         

@@ -179,6 +179,7 @@ $(function () {
     
     new Dropzone("#fm_dropzone_main", {
         maxFiles : 10,
+        maxFilesize: 500,
         url: "{{action('LA\UploadsController@upload_task_files')}}",
         type : 'POST',
         params: {

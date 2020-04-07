@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Dwij\Laraadmin\Helpers\LAHelper;
+use Auth;
 
 class CreateNewTask extends Mailable
 {
@@ -46,6 +47,7 @@ class CreateNewTask extends Mailable
         $subject = $this->subject;
 
         $email = $this->view('la.mail.createNewTask')
+                    ->from(Auth::user()->email, Auth::user()->name)
                     ->with([ 'task_title' => $task_title, 'pic' => $pic, 'reportTo' => $reportTo])
                     ->subject($subject);
         if(isset($cc_array))

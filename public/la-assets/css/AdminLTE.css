@@ -4297,6 +4297,7 @@ table.text-center th {
 }
 .users-list-name {
   font-weight: 600;
+  font-size : 12px;
   color: #444;
   overflow: hidden;
   white-space: nowrap;

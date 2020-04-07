@@ -205,7 +205,7 @@ class UploadsController extends Controller
     }
 	public function upload_task_files(Request $request){
 		$input = Input::all();
-		$today = date('Y-m-d h:i:s');
+		$today = date('Y-m-d H:i:s');
 
 		if(Input::hasFile('file')) {
 			$file = Input::file('file');
@@ -486,7 +486,7 @@ class UploadsController extends Controller
 	public function upload_ManualFiles() {
 		if(Module::hasAccess("Uploads", "create")) {
 			$input = Input::all();
-			$today = date('Y-m-d h:i:s');
+			$today = date('Y-m-d H:i:s');
 
 			if(Input::hasFile('file')) {
 				$file = Input::file('file');
@@ -540,7 +540,7 @@ class UploadsController extends Controller
 	public function upload_WorkflowFiles() {
 		if(Module::hasAccess("Uploads", "create")) {
 			$input = Input::all();
-			$today = date('Y-m-d h:i:s');
+			$today = date('Y-m-d H:i:s');
 
 			if(Input::hasFile('file')) {
 				$file = Input::file('file');
@@ -742,7 +742,7 @@ class UploadsController extends Controller
 		
 		if(isset($upload->id)) {
 			
-			$today = date('Y-m-d h:i:s');
+			$today = date('Y-m-d H:i:s');
             
             DB:: table('task_attachments')->where('id', $file_id)->delete();
 
@@ -765,7 +765,7 @@ class UploadsController extends Controller
 		
 		if(isset($upload->id)) {
 			
-			$today = date('Y-m-d h:i:s');
+			$today = date('Y-m-d H:i:s');
             
             DB:: table('sop_manual_uploads')->where('id', $file_id)->delete();
 
@@ -787,7 +787,7 @@ class UploadsController extends Controller
 		
 		if(isset($upload->id)) {
 			
-			$today = date('Y-m-d h:i:s');
+			$today = date('Y-m-d H:i:s');
             
             DB:: table('sop_flowchart_uploads')->where('id', $file_id)->delete();
 

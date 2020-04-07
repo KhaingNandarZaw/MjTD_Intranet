@@ -67,7 +67,7 @@
                                     $manual = \App\Models\Upload::find($uploadId);
                                     if(isset($manual->id)) {             
                                         $uploads_html .= '<li class="list-group-item"><a class="preview" target="_blank" href="' . url("manualfiles/" . $manual->hash . DIRECTORY_SEPARATOR . $manual->filename) . '" >
-                                                ' . $manual->name . '</a><a href="#" class="btn btn-xs btn-danger pull-right"><i class="fa fa-trash"></i></a></li>';
+                                                ' . $manual->name . '</a><a href="#"  onclick="deleteManualFile(' . $manual->id . ')" class="btn btn-xs btn-danger pull-right"><i class="fa fa-trash"></i></a></li>';
                                     }
                                     $value = $uploads_html;
                                 }
@@ -164,7 +164,6 @@ function getUploadedFile(upload) {
 }
 
 function deleteManualFile(id){
-    alert(id);
     $.ajax({
         
         dataType: 'json',

@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Dwij\Laraadmin\Models\Module;
 
-class CreateNewTasksTable extends Migration
+class CreateSystemPermissionsTable extends Migration
 {
     /**
      * Migration generate Module Table Schema by LaraAdmin
@@ -20,8 +20,49 @@ class CreateNewTasksTable extends Migration
      */
     public function up()
     {
-        Module::generate("New_tasks", 'new_tasks', 'view_column_name e.g. name', 'fa-cube', [
-            
+        Module::generate("System_permissions", 'system_permissions', 'user_id', 'fa-slack', [
+            [
+                "colname" => "user_id",
+                "label" => "User",
+                "field_type" => "Dropdown",
+                "unique" => false,
+                "defaultvalue" => "",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => true,
+                "listing_col" => false,
+                "popup_vals" => "@users",
+            ], [
+                "colname" => "ums",
+                "label" => "UMS",
+                "field_type" => "Checkbox",
+                "unique" => false,
+                "defaultvalue" => "0",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => false,
+                "listing_col" => false
+            ], [
+                "colname" => "rbs",
+                "label" => "Resource Booking System",
+                "field_type" => "Checkbox",
+                "unique" => false,
+                "defaultvalue" => "0",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => false,
+                "listing_col" => false
+            ], [
+                "colname" => "hr",
+                "label" => "HR System",
+                "field_type" => "Checkbox",
+                "unique" => false,
+                "defaultvalue" => "0",
+                "minlength" => 0,
+                "maxlength" => 0,
+                "required" => false,
+                "listing_col" => false
+            ]
         ]);
         
         /*
@@ -62,8 +103,8 @@ class CreateNewTasksTable extends Migration
      */
     public function down()
     {
-        if(Schema::hasTable('new_tasks')) {
-            Schema::drop('new_tasks');
+        if(Schema::hasTable('system_permissions')) {
+            Schema::drop('system_permissions');
         }
     }
 }

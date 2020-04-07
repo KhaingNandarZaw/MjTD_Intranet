@@ -33,7 +33,7 @@
             }
 
             .title {
-                font-size: 60px;
+                font-size: 40px;
                 margin-bottom: 40px;
 				color: #444;
             }
@@ -42,19 +42,15 @@
 				color:#3061B6;
 				text-decoration: none;
 			}
-			code {
-				padding: 2px 4px;
-				color: #c7254e;
-				background-color: #f9f2f4;
-				border-radius: 4px;
-			}
         </style>
     </head>
     <body>
         <div class="container">
             <div class="content">
-				<i class="fa fa-bug" style="font-size:120px;color:#FF5959;margin-bottom:30px;"></i>
+				<i class="fa fa-search" style="font-size:120px;color:#FF5959;margin-bottom:30px;"></i>
                 
+					<div class="title">Something Went Wrong!</div>
+				
 				@if(Auth::guest())
 					<a href="{{ url('/') }}">Homepage</a> | 
 					<a href="javascript:history.back()">Go Back</a>

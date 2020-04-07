@@ -6,9 +6,14 @@
 
 @section('content')
 <body class="hold-transition login-page">
+    <div class="row">
+        <div class="col-md-12 text-center" style="margin-bottom:-50px;">
+        <img src="{{asset('mjtd.jpg')}}" style="width: 40%; height: 40%;padding-top:10px;" alt="User Image" class="img-fluid"  />
+        </div>
+    </div>
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ url('/home') }}"><b>{{ LAConfigs::getByKey('sitename_part1') }} </b>{{ LAConfigs::getByKey('sitename_part2') }}</a>
+            <a href="{{ url('/') }}"><b>{{ LAConfigs::getByKey('sitename_part1') }} </b>{{ LAConfigs::getByKey('sitename_part2') }}</a>
         </div>
 
     @if (count($errors) > 0)

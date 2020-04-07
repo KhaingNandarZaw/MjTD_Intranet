@@ -262,7 +262,7 @@ use Dwij\Laraadmin\Models\ModuleFields;
 				<div class="box-body">
 					<div class="form-group">
 						<label for="label">Field Label :</label>
-						{{ Form::text("label", null, ['class'=>'form-control', 'placeholder'=>'Field Label', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'required' => 'required']) }}
+						{{ Form::text("label", null, ['class'=>'form-control', 'placeholder'=>'Field Label', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>50, 'required' => 'required']) }}
 					</div>
 					
 					<div class="form-group">

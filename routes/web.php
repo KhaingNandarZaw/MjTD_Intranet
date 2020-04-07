@@ -11,8 +11,12 @@
 |
 */
 
-Route::get('/admin', function () {
-    return view('welcome');
+Route::get('/', function () {
+	$user = Auth::user();
+	if(isset($user->id)){
+		return redirect('/admin');
+	}
+    return view('auth.login');
 });
 
 /* ================== Homepage + Admin Routes ================== */

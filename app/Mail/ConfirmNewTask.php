@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Dwij\Laraadmin\Helpers\LAHelper;
+use Auth;
 
 class ConfirmNewTask extends Mailable
 {
@@ -44,6 +45,7 @@ class ConfirmNewTask extends Mailable
         $subject = $this->subject;
 
         $email = $this->view('la.mail.confirmNewTask')
+                    ->from(Auth::user()->email, Auth::user()->name)
                     ->with([ 'task_title' => $task_title, 'pic' => $pic, 'reportTo' => $reportTo])
                     ->subject($subject);
 

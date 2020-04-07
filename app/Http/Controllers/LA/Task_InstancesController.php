@@ -29,6 +29,7 @@ use App\Models\User;
 use App\Mail\ActionByOfficer;
 use App\Mail\SentToOfficer;
 use App\Mail\ExtendDueDate;
+use App\Mail\SentToOutsiders;
 
 use File;
 use Carbon\Carbon;
@@ -67,7 +68,7 @@ class Task_InstancesController extends Controller
                 $sql = "select sop_setups.id, sop_setups.work_description, frames.name as time_frame, pic_userid
                 from sop_setups left join frames on frames.id = sop_setups.timeframe
                 where sop_setups.deleted_at is null and frames.deleted_at is null and frames.use_task = 0";
-                $query = DB::table(DB::raw("($sql)"));
+                $query = DB::table(DB::raw("($sql) as catch"));
                 $sop_lists = $query->get();
             }else {
                 $all_tasks = DB::table('all_tasks')->where('pic_userid', '=', Auth::user()->id)->get();
@@ -190,6 +191,7 @@ class Task_InstancesController extends Controller
         $pic_userid = 0;
         $selected_status = "Done";
         $task_type = "0";
+
         $today = date("Y-m-d");
         $input_from_date = '';
         $input_to_date = '';
@@ -216,6 +218,21 @@ class Task_InstancesController extends Controller
         if($request->has('to_date') && $request->input('to_date') != ''){
             $input_to_date = $request->input('to_date');
             $to_date = Carbon::createFromFormat('d/m/Y', $input_to_date)->format('Y-m-d');
+        }
+        
+        if($selected_status != 'Done'){
+            $from_date = Carbon::now()->startOfMonth()->toDateString();
+            $to_date = Carbon::now()->endOfMonth()->toDateString();
+            $input_from_date = Carbon::createFromFormat('Y-m-d', $from_date)->format('d/m/Y');
+            $input_to_date = Carbon::createFromFormat('Y-m-d', $to_date)->format('d/m/Y');
+            if($request->has('from_date') && $request->input('from_date') != ''){
+                $input_from_date = $request->input('from_date');
+                $from_date = Carbon::createFromFormat('d/m/Y', $input_from_date)->format('Y-m-d');
+            }
+            if($request->has('to_date') && $request->input('to_date') != ''){
+                $input_to_date = $request->input('to_date');
+                $to_date = Carbon::createFromFormat('d/m/Y', $input_to_date)->format('Y-m-d');
+            }
         }
         
         //list of status
@@ -326,7 +343,7 @@ class Task_InstancesController extends Controller
         if(Module::hasAccess("Task_Instances", "edit")) {
             
             $rules = Module::validateRules("Task_Instances", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $sop_id = $request->input('sop_id');
             $remark = $request->input('remark');
@@ -345,13 +362,19 @@ class Task_InstancesController extends Controller
                     'report_to_userid' => $sop_setup->report_to_userid,
                     'timeframe' => $sop_setup->timeframe
                 ]);
-    
+                
+                if(is_array($request->cc_users))
+                    $cc_users = implode(', ', $request->cc_users);
+                else
+                    $cc_users = '';
+
                 $inserted_id = DB::table('task_remarks')->insertGetId([
                     "created_at" => $today,
                     "task_instance_id" => $task_instance_inserted_id,
                     "remark" => $remark,
                     "user_id" => Auth::user()->id,
-                    "status" => 'Done'
+                    "status" => 'Done',
+                    'cc_users' => $cc_users
                 ]);
                 if($request->hasFile('complete_files')) {
                     $files = $request->file('complete_files');
@@ -385,47 +408,69 @@ class Task_InstancesController extends Controller
                             $upload = DB::table('task_files')->where('id', $insertedID)->first();
                         } 
                     }
-                } 
+                }
             }
+
             $user = DB::table('users')->where('id', $sop_setup->report_to_userid)->first();
             $subject = "Report From " . Auth::user()->name;
             $to = $user->email;
             $task_title = $sop_setup->work_description;
+            $task_remark = $remark;
+            $task_date = date('Y-m-d');
             $pic_user = DB::table('users')->where('id', $sop_setup->pic_userid)->first();
             $pic = $pic_user->name;
             $reportTo = $user->name;
             $files = $request->complete_files;
             $cc_array = $request->cc_users;
 
-            Mail::to($to)->send(new SentToOfficer($task_title, $pic, $reportTo, $files, $cc_array, $subject));
-            
+            Mail::to($to)->send(new SentToOfficer($task_title, $task_date, $task_remark, $pic, $reportTo, $files, $cc_array, $subject));
+
+            if($request->will_sent_outsiders){
+                $cc_outsiders = $request->cc_outsiders;
+                $users_temp = explode(',', $cc_outsiders);
+                $cc_array = [];
+                foreach($users_temp as $key => $ut){
+                    $cc_array[$key] = $ut;
+                }
+                // sent email to outsiders
+                $m = Mail::to($to)->send(new SentToOutsiders($request->contents, $files, $cc_array, $request->subject));
+                dd($m);
+            }
             // try {
             //     return response()->json("Email Sent!");
             // } catch (\Exception $e) {
             //     return response()->json($e->getMessage());
             // }
-            return redirect(config('laraadmin.adminRoute') . "/task_instances");
+
+            return redirect(config('laraadmin.adminRoute') . "/my_tasks");
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
         }
     }
+
     public function sent_to_officer(Request $request){
         if(Module::hasAccess("Task_Instances", "edit")) {
             
             $rules = Module::validateRules("Task_Instances", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $task_instance_id = $request->input('task_instance_id');
             $remark = $request->input('remark');
             
             DB:: table('task_instances')->where('id', $task_instance_id)->update(['done_date' => $today, 'status' => 'Done']);
             
+            if(is_array($request->cc_users))
+                $cc_users = implode(', ', $request->cc_users);
+            else
+                $cc_users = '';
+
             $inserted_id = DB::table('task_remarks')->insertGetId([
                 "created_at" => $today,
                 "task_instance_id" => $task_instance_id,
                 "remark" => $remark,
                 "user_id" => Auth::user()->id,
-                "status" => 'Done'
+                "status" => 'Done',
+                'cc_users' => $cc_users
             ]);
             
             if($request->hasFile('complete_files')) {
@@ -457,10 +502,8 @@ class Task_InstancesController extends Controller
                                 break;
                             }
                         }
-                        //$upload = DB::table('task_files')->where('id', $insertedID)->first();
                     }
                 }
-				 
             } 
             
             $task = DB::table('all_tasks')->where('id', $task_instance_id)->first();
@@ -470,29 +513,45 @@ class Task_InstancesController extends Controller
             $subject = "Report From " . Auth::user()->name;
             $to = $user->email;
             $task_title = $task->name;
+            $task_date = $task->task_date;
+            $task_remark = $remark;
             $pic = $task->pic;
             $reportTo = $task->reportTo;
-            $files = $request->complete_files;
             $cc_array = $request->cc_users;
+            $files = $request->complete_files;
 
-            Mail::to($to)->send(new SentToOfficer($task_title, $pic, $reportTo, $files, $cc_array, $subject));
-            
+            // sent email to internal users
+            Mail::to($to)->send(new SentToOfficer($task_title, $task_date, $task_remark, $pic, $reportTo, $files, $cc_array, $subject));
+
+            if($request->will_sent_outsiders){
+                $cc_outsiders = $request->cc_outsiders;
+                $users_temp = explode(',', $cc_outsiders);
+                $cc_array = [];
+                foreach($users_temp as $key => $ut){
+                    $cc_array[$key] = $ut;
+                }
+                // sent email to outsiders
+                Mail::to($to)->send(new SentToOutsiders($request->contents, $files, $cc_array, $request->subject));
+            }
+
             // try {
             //     return response()->json("Email Sent!");
             // } catch (\Exception $e) {
             //     return response()->json($e->getMessage());
             // }
-            return redirect(config('laraadmin.adminRoute') . "/task_instances");
+
+            return redirect(config('laraadmin.adminRoute') . "/my_tasks");
             
         } else {
             return redirect(config('laraadmin.adminRoute') . "/");
         }
     }
+
     public function cancel_task(Request $request){
         if(Module::hasAccess("Task_Instances", "edit")) {
             
             $rules = Module::validateRules("Task_Instances", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $task_instance_id = $request->input('task_instance_id');
             $remark = $request->input('remark');
@@ -528,7 +587,7 @@ class Task_InstancesController extends Controller
         if(Module::hasAccess("Task_Instances", "edit")) {
             
             $rules = Module::validateRules("Task_Instances", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $task_instance_id = $request->input('task_instance_id');
             $remark = $request->input('remark');
@@ -577,7 +636,7 @@ class Task_InstancesController extends Controller
         if(Module::hasAccess("Task_Instances", "edit")) {
             
             $rules = Module::validateRules("Task_Instances", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $task_instance_id = $request->input('task_instance_id');
             $remark = $request->input('remark');
@@ -613,7 +672,7 @@ class Task_InstancesController extends Controller
         if(Module::hasAccess("Task_Instances", "edit")) {
             
             $rules = Module::validateRules("Task_Instances", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             $task_instance_id = $request->input('task_instance_id');
             $remark = $request->input('remark');
@@ -627,6 +686,40 @@ class Task_InstancesController extends Controller
                 "user_id" => Auth::user()->id,
                 "status" => 'Rejected'
             ]);
+
+            if($request->hasFile('complete_files')) {
+				$files = $request->file('complete_files');
+                
+                foreach($files as $file){
+                    $folder = storage_path('uploads');
+                    $filename = $file->getClientOriginalName();
+        
+                    $date_append = date("Y-m-d-His-");
+                    $fileContent = file_get_contents($file->getRealPath());
+                    $data = base64_encode($fileContent);
+                    
+                    if( $data != null ) {
+                        $insertedID = DB::table('task_files')->insertGetId([
+                            "task_instance_id" => $task_instance_id,
+                            "created_at" => $today,
+                            "filename" => $filename,
+                            "extension" => pathinfo($filename, PATHINFO_EXTENSION),
+                            "hash" => "",
+                            "task_files" => $data,
+                            'task_remark_id' => $insert
+                        ]);
+                        // apply unique random hash to file
+                        while(true) {
+                            $hash = strtolower(str_random(20));
+                            if(!DB::table('task_files')->where("hash", $hash)->count()){
+                                $upload = DB::table('task_files')->where('id', $insertedID)->update(['hash' => $hash]);
+                                break;
+                            }
+                        }
+                    }
+                }
+				 
+            } 
             
             // sent email
             $task = DB::table('all_tasks')->where('id', $task_instance_id)->first();
@@ -647,7 +740,7 @@ class Task_InstancesController extends Controller
     }
     public function extend_duedate(Request $request){
         $rules = Module::validateRules("Task_Instances", $request);
-        $today = date('Y-m-d h:i:s');
+        $today = date('Y-m-d H:i:s');
         
         $task_instance_id = $request->input('task_instance_id');
         $remark = $request->input('remark');
@@ -702,11 +795,28 @@ class Task_InstancesController extends Controller
                 if(isset($task_instance->id)) {
                 $module = Module::get('Task_Instances');
                 $module->row = $task_instance;
+            $users = [];
+            if(Entrust::hasRole("SUPER_ADMIN") || Entrust::hasRole("CEO")){
+                $query = DB::table('all_tasks');
+                $users = User::whereNull('deleted_at')->where('id', '!=', 1)->get();
+            }else if(Entrust::hasRole("EMPLOYEE")) {
+                $query = DB::table('all_tasks')->where('report_to_userid', '=', Auth::user()->id);
+                
+            }else if(Entrust::hasRole("OFFICER") || Entrust::hasRole("DGM")){
+                $child_lists = \Session::get('child_user_lists');
+                $childs = DB::select('call getAllChildUsers(?)', array(Auth::user()->department));
+
+                for ($i=0; $i < count($childs); $i++) { 
+                    if($childs[$i]->id != Auth::user()->id)
+                        array_push($users, $childs[$i]);
+                }
+            }
                 
                 return view('la.task_instances.show', [
                     'module' => $module,
                     'view_col' => $module->view_col,
                     'no_header' => true,
+                    'users' => $users,
                     'no_padding' => "no-padding",
                     'task_remarks' => $task_remarks
                 ])->with('task_instance', $task_instance);
@@ -961,8 +1071,7 @@ class Task_InstancesController extends Controller
  
             $query = DB::table('all_tasks')
                 ->select('id', 'name as title', 'task_date as start', 'status', 'done_date as done')
-                ->whereIn('pic_userid', $child_lists)->whereDate('task_date', '>=', $start)
-                ->whereDate('task_date',   '<=', $end)->where('status', '!=', 'Cancel');
+                ->whereIn('pic_userid', $child_lists)->where('status', '!=', 'Cancel');
             
             if(isset($user_id) && $user_id != "0"){
                 $query = $query->where('pic_userid', '=', $user_id);

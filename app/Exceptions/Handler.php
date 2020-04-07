@@ -44,7 +44,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        
+        if ($exception instanceof \ErrorException) {
+            return response()->view("errors.customErr");
+       }
         return parent::render($request, $exception);
     }
 

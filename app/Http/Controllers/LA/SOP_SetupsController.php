@@ -76,7 +76,7 @@ class SOP_SetupsController extends Controller
         if(Module::hasAccess("SOP_Setups", "create")) {
             
             $rules = Module::validateRules("SOP_Setups", $request);
-            $today = date('Y-m-d h:i:s');
+            $today = date('Y-m-d H:i:s');
 
             // $sop_setup = DB::table('sop_setups')->insertGetId([
             //     "created_at" => $today,

@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Dwij\Laraadmin\Helpers\LAHelper;
+use Auth;
 
 class ExtendDueDate extends Mailable
 {
@@ -50,6 +51,7 @@ class ExtendDueDate extends Mailable
         $extend_due_date = $this->extend_due_date;
 
         $email = $this->view('la.mail.extendDueDate')
+                    ->from(Auth::user()->email, Auth::user()->name)
                     ->with([ 'task_title' => $task_title, 'pic' => $pic, 'action_by' => $action_by, 'from_date' => $task_date, 'to_date' => $extend_due_date])
                     ->subject($subject);
 
